@@ -33,7 +33,12 @@ void make_grid(struct grid *g, struct parList *pars)
     g->nx2_int = pars->nx2;
     g->nx1 = pars->nx1 + 2*pars->nghost;
     g->nx2 = pars->nx2 + 2*pars->nghost;
-    g->ng = pars->nghost;
+    g->ng11 = pars->bc1Inner == 0 ? 0 : pars->nghost;
+    g->ng12 = pars->bc1Outer == 0 ? 0 : pars->nghost;
+    g->ng21 = pars->bc2Inner == 0 ? 0 : pars->nghost;
+    g->ng22 = pars->bc2Outer == 0 ? 0 : pars->nghost;
+    g->nx1 = pars->nx1 + g->ng11 + g->ng12;
+    g->nx2 = pars->nx2 + g->ng21 + g->ng22;
     g->x1min = pars->x1min;
     g->x1max = pars->x1max;
     g->x2min = pars->x2min;
@@ -54,9 +59,9 @@ void make_grid(struct grid *g, struct parList *pars)
     double dx1 = (g->x1max - g->x1min) / g->nx1_int;
     double dx2 = (g->x2max - g->x2min) / g->nx2_int;
     for(i=0; i<g->nx1+1; i++)
-        g->x1[i] = g->x1min + (i - g->ng) * dx1;
+        g->x1[i] = g->x1min + (i - g->ng11) * dx1;
     for(i=0; i<g->nx2+1; i++)
-        g->x2[i] = g->x2min + (i - g->ng) * dx2;
+        g->x2[i] = g->x2min + (i - g->ng21) * dx2;
 }
 
 void free_grid(struct grid *g)

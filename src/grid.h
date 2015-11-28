@@ -9,7 +9,10 @@ struct grid
     int nx2;
     int nx1_int;
     int nx2_int;
-    int ng;
+    int ng11;
+    int ng12;
+    int ng21;
+    int ng22;
     int nc;
     int nq;
     double x1min;
@@ -31,7 +34,10 @@ const static struct grid GRID_DEFAULT = {
     .nx2 = 0,
     .nx1_int = 0,
     .nx2_int = 0,
-    .ng = 0,
+    .ng11 = 0,
+    .ng12 = 0,
+    .ng21 = 0,
+    .ng22 = 0,
     .nc = 0,
     .nq = 0,
     .x1min = 0.0,
