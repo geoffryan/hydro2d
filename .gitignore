@@ -1,0 +1,11 @@
+.DS_store
+bin/hydro2d
+*.o
+out*
+*.swp
+*.txt
+*.png
+*.pyc
+bin/
+Makefile.in
+data/

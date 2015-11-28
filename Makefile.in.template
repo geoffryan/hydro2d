@@ -1,0 +1,5 @@
+# Machine and build specific options for Hydro1D.
+
+CC = gcc
+CFLAGS = 
+
