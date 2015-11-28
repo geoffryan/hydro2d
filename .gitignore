@@ -4,6 +4,7 @@ bin/hydro2d
 out*
 *.swp
 *.txt
+*.h5
 *.png
 *.pyc
 bin/
