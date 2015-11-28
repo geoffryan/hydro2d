@@ -1,5 +1,6 @@
-# Machine and build specific options for Hydro1D.
+# Machine and build specific options for Hydro2D.
 
 CC = gcc
+H5DIR = /usr/local
 CFLAGS = 
 

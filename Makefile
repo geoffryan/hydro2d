@@ -21,6 +21,9 @@ DEBUG    = -g
 CFLAGS   += -O3 -Wall -c $(DEBUG) -DVERSION=\"$(GIT_VERSION)\"
 LDFLAGS  = -lm
 
+CFLAGS += -I$(H5DIR)/include
+LDFLAGS += -L$(H5DIR)/lib -lhdf5
+
 .PHONY: all clean distclean
 
 

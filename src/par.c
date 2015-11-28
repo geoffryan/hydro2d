@@ -21,7 +21,10 @@ int readvar(char filename[], char key[], int vtype, void *ptr)
     }
     fclose(f);
     if(!found)
-        return 0;
+    {
+        printf("SETUP: %s parameter not found. Using default.\n", key);
+        return 1;
+    }
 
     char *sval = line + strlen(key) + strspn(line+strlen(key)," \t:=");
 
@@ -79,6 +82,7 @@ void read_pars(struct parList *theParList, char filename[])
     readvar(filename, "CFL",     VAR_DBL, &(theParList->cfl));
     readvar(filename, "GammaLaw",     VAR_DBL, &(theParList->gammalaw));
     readvar(filename, "M",     VAR_DBL, &(theParList->M));
+    readvar(filename, "IO",     VAR_INT, &(theParList->io));
     readvar(filename, "NumCheckpoints",     VAR_INT, &(theParList->nChkpt));
     readvar(filename, "Init",         VAR_INT, &(theParList->init));
     readvar(filename, "InitPar1",     VAR_DBL, &(theParList->initPar1));
@@ -91,9 +95,15 @@ void read_pars(struct parList *theParList, char filename[])
     readvar(filename, "InitPar8",     VAR_DBL, &(theParList->initPar8));
 }
 
-void print_pars(struct parList *theParList, FILE *f)
+void print_pars(struct parList *theParList, char filename[])
 {
-    fprintf(f, "===Input Parameters===\n");
+    FILE *f;
+    if(filename == NULL)
+        f = stdout;
+    else
+        f = fopen(filename, "a");
+
+    fprintf(f, "### Input Parameters ###\n");
     fprintf(f, "Hydro: %d\n", theParList->hydro);
     fprintf(f, "EOS: %d\n", theParList->eos);
     fprintf(f, "Cool: %d\n", theParList->cool);
@@ -120,6 +130,7 @@ void print_pars(struct parList *theParList, FILE *f)
     fprintf(f, "CFL: %g\n", theParList->cfl);
     fprintf(f, "GammaLaw: %g\n", theParList->gammalaw);
     fprintf(f, "M: %g\n", theParList->M);
+    fprintf(f, "IO: %d\n", theParList->io);
     fprintf(f, "NumCheckpoints: %d\n", theParList->nChkpt);
     fprintf(f, "Init: %d\n", theParList->init);
     fprintf(f, "InitPar1: %g\n", theParList->initPar1);
@@ -130,5 +141,7 @@ void print_pars(struct parList *theParList, FILE *f)
     fprintf(f, "InitPar6: %g\n", theParList->initPar6);
     fprintf(f, "InitPar7: %g\n", theParList->initPar7);
     fprintf(f, "InitPar8: %g\n", theParList->initPar8);
-    fprintf(f, "\n");
+
+    if(filename != NULL)
+        fclose(f);
 }

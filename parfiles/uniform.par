@@ -24,6 +24,7 @@ X1max       2000.0
 X2min       1000.0
 X2max       2000.0
 
+IO             1
 NumCheckpoints 100
 
 PLM         1.5

@@ -1,7 +1,7 @@
 #ifndef HYDRO2D_PAR
 #define HYDRO2D_PAR
 
-enum{VAR_DBL, VAR_INT, VAR_LON};
+enum{VAR_DBL, VAR_INT, VAR_LON, VAR_STR};
 
 struct parList
 {
@@ -32,6 +32,7 @@ struct parList
     double gammalaw;
     double M;
 
+    int io;
     int nChkpt;
 
     int init;
@@ -73,6 +74,7 @@ const static struct parList PAR_DEFAULT = {
     .gammalaw = 1.4,
     .M = 1.0,
 
+    .io = 0,
     .nChkpt = 0,
 
     .init = 0,
@@ -88,6 +90,6 @@ const static struct parList PAR_DEFAULT = {
 
 int readvar(char filename[], char key[], int vtype, void *ptr);
 void read_pars(struct parList *theParList, char filename[]);
-void print_pars(struct parList *theParList, FILE *f);
+void print_pars(struct parList *theParList, char filename[]);
 
 #endif

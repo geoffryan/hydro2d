@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "grid.h"
 #include "par.h"
+#include "io.h"
 
 int main(int argc, char *argv[])
 {
@@ -9,19 +10,18 @@ int main(int argc, char *argv[])
         printf("usage: hydro2d <parameter file>\n");
         return 0;
     }
-
     printf("\nWelcome to Hydro2D.\n\n");
     printf("Git Hash: %s\n", VERSION);
 
     int err = 0;
     struct parList pars = PAR_DEFAULT;
     struct grid grid = GRID_DEFAULT;
-    //struct io io = IO_DEFAULT;
+    struct io io = IO_DEFAULT;
 
     read_pars(&pars, argv[1]);
 
     err += set_reconstruction(&pars);
-    //err += set_io(&pars);
+    err += set_io(&pars);
 
     if(err)
     {
@@ -31,13 +31,10 @@ int main(int argc, char *argv[])
 
     make_grid(&grid, &pars);
 
-    //io_out(&io, &grid);
-    print_pars(&pars, stdout);
+    io_out(&io, &grid, &pars);
+    //print_pars(&pars, NULL);
 
     free_grid(&grid);
-
-    return 0;
-
 
     return 0;
 }
