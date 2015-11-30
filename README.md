@@ -1,9 +1,9 @@
-2D Hydrodynamics
+# 2D Hydrodynamics
 
 This is a test code to play around with geometry implementations in
 hydrodynamic codes.
 
-Installation:
+## Installation:
 
 Copy `Makefile.in.template` to `Makefile.in`.  Edit `Makefile.in` to point to
 your local HDF5 installation and specify your C compiler.  Then just run 
@@ -12,7 +12,7 @@ your local HDF5 installation and specify your C compiler.  Then just run
 `Makefile.in` is ignored by the repo, it is machine specific, so feel free to 
 edit it at any time.
 
-Running:
+## Running:
 
     $ bin/hydro2d myparfile.par
 
