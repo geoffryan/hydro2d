@@ -2,7 +2,7 @@
 #include "grid.h"
 #include "par.h"
 #include "geom.h"
-//#include "boundary.h"
+#include "boundary.h"
 #include "hydro.h"
 #include "riemann.h"
 #include "timestep.h"
@@ -27,8 +27,10 @@ void substep(struct grid *g, double rkfac1, double rkfac2, double dt,
     calc_prim(g, pars);
 
     //Boundary Conditions.
-    //bc_inner(g, pars);
-    //bc_outer(g, pars);
+    bc_1L(g, pars);
+    bc_1R(g, pars);
+    bc_2L(g, pars);
+    bc_2R(g, pars);
 
     //Re-update cons.
     calc_cons(g, pars);

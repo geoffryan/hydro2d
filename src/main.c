@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "boundary.h"
 #include "geom.h"
 #include "grid.h"
 #include "par.h"
@@ -24,6 +25,7 @@ int main(int argc, char *argv[])
     err += set_reconstruction(&pars);
     err += set_geometry(&pars);
     err += set_io(&pars);
+    err += set_boundary(&pars);
 
     if(err)
     {
