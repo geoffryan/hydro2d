@@ -1,7 +1,6 @@
 .DS_store
 bin/hydro2d
 *.o
-out*
 *.swp
 *.txt
 *.h5
