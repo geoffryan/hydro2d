@@ -31,8 +31,6 @@ void make_grid(struct grid *g, struct parList *pars)
     //space for data arrays.
     g->nx1_int = pars->nx1;
     g->nx2_int = pars->nx2;
-    g->nx1 = pars->nx1 + 2*pars->nghost;
-    g->nx2 = pars->nx2 + 2*pars->nghost;
     g->ng11 = pars->bc1Inner == 0 ? 0 : pars->nghost;
     g->ng12 = pars->bc1Outer == 0 ? 0 : pars->nghost;
     g->ng21 = pars->bc2Inner == 0 ? 0 : pars->nghost;

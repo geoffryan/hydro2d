@@ -41,7 +41,7 @@ void initialize_grid(struct grid *g, struct parList *par)
             double xp[2] = {g->x1[i+1], g->x2[j+1]};
             double x[2];
             geom_CM(xm, xp, x);
-
+            
             initial_value(&(g->prim[nq*(nx2*i+j)]), x, nq, par);
         }
 

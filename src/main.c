@@ -2,9 +2,12 @@
 #include "boundary.h"
 #include "geom.h"
 #include "grid.h"
-#include "par.h"
+#include "hydro.h"
 #include "initial.h"
 #include "io.h"
+#include "par.h"
+#include "riemann.h"
+#include "timestep.h"
 
 int main(int argc, char *argv[])
 {
@@ -23,10 +26,14 @@ int main(int argc, char *argv[])
 
     read_pars(&pars, argv[1]);
 
-    err += set_reconstruction(&pars);
-    err += set_geometry(&pars);
-    err += set_io(&pars);
     err += set_boundary(&pars);
+    err += set_geometry(&pars);
+    err += set_hydro(&pars);
+    err += set_initial(&pars);
+    err += set_io(&pars);
+    err += set_reconstruction(&pars);
+    err += set_riemann(&pars);
+    err += set_timestep(&pars);
 
     if(err)
     {
@@ -36,11 +43,26 @@ int main(int argc, char *argv[])
 
     make_grid(&grid, &pars);
     initialize_grid(&grid, &pars);
+    io_init(&io, &pars);
 
     io_out(&io, &grid, &pars);
-    //print_pars(&pars, NULL);
+
+    int i = 1;
+    while(grid.t < pars.tmax)
+    {
+        double dt = get_dt(&grid, &pars);
+        dt = grid.t+dt > pars.tmax ? pars.tmax-grid.t : dt;
+
+        printf("t: %.6e dt: %.6e\n", grid.t, dt);
+
+        timestep(&grid, dt, &pars);
+        io_out(&io, &grid, &pars);
+
+        i++;
+    }
 
     free_grid(&grid);
+    printf("CALCULATIONS CORRECT\n");
 
     return 0;
 }

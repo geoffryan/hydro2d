@@ -5,7 +5,7 @@
 #include "hydro.h"
 #include "riemann.h"
 
-int set_riemann_solver(struct parList *pars)
+int set_riemann(struct parList *pars)
 {
     int choice = pars->riemann;
     int err = 0;

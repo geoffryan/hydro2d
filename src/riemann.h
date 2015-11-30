@@ -4,7 +4,7 @@
 void (*riemann_flux)(double primL[], double primR[], double F[], int nq,
                     double x[2], int dir, struct parList *pars);
 
-int set_riemann_solver(struct parList *pars);
+int set_riemann(struct parList *pars);
 
 void lax_friedrichs_flux(double primL[], double primR[], double F[], int nq,
                             double x[2], int dir, struct parList *pars);

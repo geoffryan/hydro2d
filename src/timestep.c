@@ -118,17 +118,12 @@ void calc_cons(struct grid *g, struct parList *pars)
     int nx1 = g->nx1;
     int nx2 = g->nx2;
 
-    double xm[2] = {0,0};
-    double xp[2] = {0,0};
-    double x[2] = {0,0};
-
     for(i=0; i<nx1; i++)
         for(j=0; j<nx2; j++)
         {
-            xm[0] = g->x1[i];
-            xm[1] = g->x2[j];
-            xp[0] = g->x1[i+1];
-            xp[1] = g->x2[j+1];
+            double xm[2] = {g->x1[i], g->x2[j]};
+            double xp[2] = {g->x1[i+1], g->x2[j+1]};
+            double x[2];
             geom_CM(xm,xp,x);
             double dV = geom_dV(xm,xp);
 
