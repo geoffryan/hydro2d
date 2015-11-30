@@ -6,6 +6,7 @@ enum{VAR_DBL, VAR_INT, VAR_LON, VAR_STR};
 struct parList
 {
     int hydro;
+    int geom;
     int eos;
     int cool;
     int recon;
@@ -48,6 +49,7 @@ struct parList
 
 const static struct parList PAR_DEFAULT = {
     .hydro = 0,
+    .geom = 0,
     .eos = 0,
     .cool = 0,
     .recon = 0,

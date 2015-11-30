@@ -25,7 +25,6 @@ struct grid
     double *prim;
     double *cons;
     double *cons_rk;
-    double *grad;
     double PLM;
 };
 
@@ -50,18 +49,21 @@ const static struct grid GRID_DEFAULT = {
     .prim = NULL,
     .cons = NULL,
     .cons_rk = NULL,
-    .grad = NULL,
     .PLM = 1.5
 };
 
-void (*reconstruction)(struct grid *);
+void (*reconstruction)(struct grid *, int i, int j, int dir,
+                        double primL[], double primR[]);
 
 int set_reconstruction(struct parList *pars);
 void make_grid(struct grid *g, struct parList *pars);
 void free_grid(struct grid *g);
 
-void interpolate_constant(struct grid *g);
-void interpolate_plm(struct grid *g);
+void interpolate_constant(struct grid *g, int i, int j, int dir,
+                            double primL[], double primR[]);
+void interpolate_plm(struct grid *g, int i, int j, int dir,
+                            double primL[], double primR[]);
+
 void copy_to_rk(struct grid *g);
 void update_cons(struct grid *g, double fac1, double fac2);
 void update_cons_rk(struct grid *g, double fac1, double fac2);

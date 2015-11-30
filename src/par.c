@@ -57,6 +57,7 @@ int readvar(char filename[], char key[], int vtype, void *ptr)
 void read_pars(struct parList *theParList, char filename[])
 {
     readvar(filename, "Hydro", VAR_INT, &(theParList->hydro));
+    readvar(filename, "Geometry", VAR_INT, &(theParList->geom));
     readvar(filename, "EOS",   VAR_INT, &(theParList->eos));
     readvar(filename, "Cool",  VAR_INT, &(theParList->cool));
     readvar(filename, "Recon",  VAR_INT, &(theParList->recon));
@@ -105,6 +106,7 @@ void print_pars(struct parList *theParList, char filename[])
 
     fprintf(f, "### Input Parameters ###\n");
     fprintf(f, "Hydro: %d\n", theParList->hydro);
+    fprintf(f, "Geometry: %d\n", theParList->geom);
     fprintf(f, "EOS: %d\n", theParList->eos);
     fprintf(f, "Cool: %d\n", theParList->cool);
     fprintf(f, "Recon: %d\n", theParList->recon);

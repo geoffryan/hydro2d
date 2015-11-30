@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "geom.h"
 #include "grid.h"
 #include "par.h"
 #include "io.h"
@@ -21,6 +22,7 @@ int main(int argc, char *argv[])
     read_pars(&pars, argv[1]);
 
     err += set_reconstruction(&pars);
+    err += set_geometry(&pars);
     err += set_io(&pars);
 
     if(err)

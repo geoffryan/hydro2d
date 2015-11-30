@@ -144,9 +144,6 @@ void io_print_grid_ascii(struct grid *g, char filename[])
                 fprintf(f, " %.12g", g->prim[nq*(nx2*i+j)+q]);
             for(q=0; q<nq; q++)
                 fprintf(f, " %.12g", g->cons[nq*(nx2*i+j)+q]);
-            for(q=0; q<nq; q++)
-                fprintf(f, " %.12g %.12g",  g->grad[2*nq*(nx2*i+j)+q+0], 
-                                            g->grad[2*nq*(nx2*i+j)+q+1]);
             fprintf(f, "\n");
         }
 
@@ -162,6 +159,7 @@ void io_print_header_hdf5(hid_t id)
 void io_print_pars_hdf5(struct parList *par, hid_t id)
 {
     io_write_attr_hdf5(id, "Hydro", VAR_INT, &(par->hydro), 0);
+    io_write_attr_hdf5(id, "Geom", VAR_INT, &(par->geom), 0);
     io_write_attr_hdf5(id, "EOS",   VAR_INT, &(par->eos), 0);
     io_write_attr_hdf5(id, "Cool",  VAR_INT, &(par->cool), 0);
     io_write_attr_hdf5(id, "Recon",  VAR_INT, &(par->recon), 0);
@@ -203,9 +201,7 @@ void io_print_pars_hdf5(struct parList *par, hid_t id)
 void io_print_grid_hdf5(struct grid *g, struct parList *par, hid_t id)
 {
     hsize_t dims1[1] = {1};
-    hsize_t dims2[2] = {1,1};
     hsize_t dims3[3] = {1,1,1};
-    hsize_t dims4[4] = {1,1,1,1};
 
     int nx1 = g->nx1;
     int nx2 = g->nx2;
@@ -223,12 +219,6 @@ void io_print_grid_hdf5(struct grid *g, struct parList *par, hid_t id)
     dims3[2] = nq;
     io_write_dset_hdf5(id, "prim", VAR_DBL, g->prim, 3, dims3);
     io_write_dset_hdf5(id, "cons", VAR_DBL, g->cons, 3, dims3);
-    
-    dims4[0] = nx1;
-    dims4[1] = nx2;
-    dims4[2] = nq;
-    dims4[3] = 2;
-    io_write_dset_hdf5(id, "grad", VAR_DBL, g->grad, 4, dims4);
 }
 
 void io_write_attr_hdf5(hid_t id, char name[], int type, void *val, int len)

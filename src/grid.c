@@ -53,7 +53,6 @@ void make_grid(struct grid *g, struct parList *pars)
     g->prim = (double *) malloc(g->nx1 * g->nx2 * g->nq * sizeof(double));
     g->cons = (double *) malloc(g->nx1 * g->nx2 * g->nq * sizeof(double));
     g->cons_rk = (double *) malloc(g->nx1 * g->nx2 * g->nq * sizeof(double));
-    g->grad = (double *) malloc(g->nx1 * g->nx2 * g->nq * 2 * sizeof(double));
 
     int i;
     double dx1 = (g->x1max - g->x1min) / g->nx1_int;
@@ -71,25 +70,45 @@ void free_grid(struct grid *g)
     free(g->prim);
     free(g->cons);
     free(g->cons_rk);
-    free(g->grad);
 }
 
-void interpolate_constant(struct grid *g)
+void interpolate_constant(struct grid *g, int i, int j, int dir,
+                            double primL[], double primR[])
 {
-    int i,q;
-    int nx1 = g->nx1;
-    int nx2 = g->nx2;
+    int q;
     int nq = g->nq;
+    int nx2 = g->nx2;
+    int iL, jL, iR, jR;
 
-    for(i=0; i<nx1*nx2; i++)
-        for(q=0; q<nq; q++)
-        {
-            g->grad[2*nq*i+q+0] = 0.0;
-            g->grad[2*nq*i+q+1] = 0.0;
-        }
+    if(dir == 0)
+    {
+        iL = i-1;
+        iR = i;
+        jL = j;
+        jR = j;
+    }
+    else if(dir == 1)
+    {
+        iL = i;
+        iR = i;
+        jL = j-1;
+        jR = j;
+    }
+    else
+    {
+        printf("ERROR - interpolate constant has bad dir=%d\n", dir);
+        return;
+    }
+
+    for(q=0; q<nq; q++)
+    {
+        primL[q] = g->prim[nq*(nx2*iL+jL)+q];
+        primR[q] = g->prim[nq*(nx2*iR+jR)+q];
+    }
 }
 
-void interpolate_plm(struct grid *g)
+void interpolate_plm(struct grid *g, int i, int j, int dir,
+                            double primL[], double primR[])
 {
     //TODO: Write this.
     /*
