@@ -3,6 +3,7 @@
 #include "geom.h"
 #include "grid.h"
 #include "par.h"
+#include "initial.h"
 #include "io.h"
 
 int main(int argc, char *argv[])
@@ -34,6 +35,7 @@ int main(int argc, char *argv[])
     }
 
     make_grid(&grid, &pars);
+    initialize_grid(&grid, &pars);
 
     io_out(&io, &grid, &pars);
     //print_pars(&pars, NULL);

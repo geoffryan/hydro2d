@@ -4,6 +4,7 @@
 #include "../par.h"
 #include "../geom.h"
 #include "../hydro.h"
+#include "newt2.h"
 
 void prim2cons_newt2(double *prim, double *cons, double x[2], double dV,
                             struct parList *pars)

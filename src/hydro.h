@@ -1,9 +1,6 @@
 #ifndef HYDRO2D_HYDRO
 #define HYDRO2D_HYDRO
 
-enum{RHO, PPP, VX1, VX2, VX3};
-enum{DDD, TAU, SX1, SX2, SX3};
-
 void (*prim2cons)(double *prim, double *cons, double x[2], double dV,
                     struct parList *pars);
 void (*cons2prim)(double *cons, double *prim, double x[2], double dV,
