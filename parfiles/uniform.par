@@ -8,8 +8,8 @@ Recon       0    // 0 PCM, 1 PLM
 Riemann     0    // 0 Lax-Friedrichs, 1 HLL
 Timestep    0    // 0 Forward-Euler, 1 RK2-MP, 2 RK2-TVD, 3 RK3-TVD
 
-Nx1         64   // Number of zones
-Nx2         32   // Number of zones
+Nx1         8   // Number of zones
+Nx2         6   // Number of zones
 Nghost      2    // Number of ghost zones
 Ncons       4    // Number of conserved quantities
 Npass       1    // Number of passive quantities
@@ -24,9 +24,9 @@ X2max       1.0
 IO             1    //0 ASCII, 1 HDF5
 NumCheckpoints 100
 
-BCX1Inner   0    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
-BCX1Outer   0    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
-BCX2Inner   0    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
+BCX1Inner   1    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
+BCX1Outer   2    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
+BCX2Inner   3    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
 BCX2Outer   0    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
 
 PLM         1.5

@@ -63,7 +63,6 @@ void read_pars(struct parList *theParList, char filename[])
     readvar(filename, "Recon",  VAR_INT, &(theParList->recon));
     readvar(filename, "Riemann",  VAR_INT, &(theParList->riemann));
     readvar(filename, "Timestep",  VAR_INT, &(theParList->step));
-    readvar(filename, "Frame",  VAR_INT, &(theParList->frame));
     readvar(filename, "BCX1Inner",  VAR_INT, &(theParList->bc1Inner));
     readvar(filename, "BCX1Outer",  VAR_INT, &(theParList->bc1Outer));
     readvar(filename, "BCX2Inner",  VAR_INT, &(theParList->bc2Inner));
@@ -82,7 +81,6 @@ void read_pars(struct parList *theParList, char filename[])
     readvar(filename, "PLM",     VAR_DBL, &(theParList->plm));
     readvar(filename, "CFL",     VAR_DBL, &(theParList->cfl));
     readvar(filename, "GammaLaw",     VAR_DBL, &(theParList->gammalaw));
-    readvar(filename, "M",     VAR_DBL, &(theParList->M));
     readvar(filename, "IO",     VAR_INT, &(theParList->io));
     readvar(filename, "NumCheckpoints",     VAR_INT, &(theParList->nChkpt));
     readvar(filename, "Init",         VAR_INT, &(theParList->init));
@@ -112,7 +110,6 @@ void print_pars(struct parList *theParList, char filename[])
     fprintf(f, "Recon: %d\n", theParList->recon);
     fprintf(f, "Riemann: %d\n", theParList->riemann);
     fprintf(f, "Timestep: %d\n", theParList->step);
-    fprintf(f, "Frame: %d\n", theParList->frame);
     fprintf(f, "BCX1Inner: %d\n", theParList->bc1Inner);
     fprintf(f, "BCX1Outer: %d\n", theParList->bc1Outer);
     fprintf(f, "BCX2Inner: %d\n", theParList->bc2Inner);
@@ -131,7 +128,6 @@ void print_pars(struct parList *theParList, char filename[])
     fprintf(f, "PLM: %g\n", theParList->plm);
     fprintf(f, "CFL: %g\n", theParList->cfl);
     fprintf(f, "GammaLaw: %g\n", theParList->gammalaw);
-    fprintf(f, "M: %g\n", theParList->M);
     fprintf(f, "IO: %d\n", theParList->io);
     fprintf(f, "NumCheckpoints: %d\n", theParList->nChkpt);
     fprintf(f, "Init: %d\n", theParList->init);

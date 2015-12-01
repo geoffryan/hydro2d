@@ -12,7 +12,6 @@ struct parList
     int recon;
     int riemann;
     int step;
-    int frame;
     int bc1Inner;
     int bc1Outer;
     int bc2Inner;
@@ -31,7 +30,6 @@ struct parList
     double plm;
     double cfl;
     double gammalaw;
-    double M;
 
     int io;
     int nChkpt;
@@ -55,7 +53,6 @@ const static struct parList PAR_DEFAULT = {
     .recon = 0,
     .riemann = 0,
     .step = 0,
-    .frame = 0,
     .bc1Inner = 0,
     .bc1Outer = 0,
     .bc2Inner = 0,
@@ -74,7 +71,6 @@ const static struct parList PAR_DEFAULT = {
     .plm = 1.5,
     .cfl = 0.5,
     .gammalaw = 1.4,
-    .M = 1.0,
 
     .io = 0,
     .nChkpt = 0,

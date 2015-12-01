@@ -165,7 +165,6 @@ void io_print_pars_hdf5(struct parList *par, hid_t id)
     io_write_attr_hdf5(id, "Recon",  VAR_INT, &(par->recon), 0);
     io_write_attr_hdf5(id, "Riemann",  VAR_INT, &(par->riemann), 0);
     io_write_attr_hdf5(id, "Timestep",  VAR_INT, &(par->step), 0);
-    io_write_attr_hdf5(id, "Frame",  VAR_INT, &(par->frame), 0);
     io_write_attr_hdf5(id, "BCX1Inner",  VAR_INT, &(par->bc1Inner), 0);
     io_write_attr_hdf5(id, "BCX1Outer",  VAR_INT, &(par->bc1Outer), 0);
     io_write_attr_hdf5(id, "BCX2Inner",  VAR_INT, &(par->bc2Inner), 0);
@@ -184,7 +183,6 @@ void io_print_pars_hdf5(struct parList *par, hid_t id)
     io_write_attr_hdf5(id, "PLM",     VAR_DBL, &(par->plm), 0);
     io_write_attr_hdf5(id, "CFL",     VAR_DBL, &(par->cfl), 0);
     io_write_attr_hdf5(id, "GammaLaw",     VAR_DBL, &(par->gammalaw), 0);
-    io_write_attr_hdf5(id, "M",     VAR_DBL, &(par->M), 0);
     io_write_attr_hdf5(id, "IO",     VAR_INT, &(par->io), 0);
     io_write_attr_hdf5(id, "NumCheckpoints",     VAR_INT, &(par->nChkpt), 0);
     io_write_attr_hdf5(id, "Init",         VAR_INT, &(par->init), 0);
