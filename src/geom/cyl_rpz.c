@@ -11,7 +11,7 @@ double geom_dA_cyl_rpz(double xm[], double xp[], int dir)
     double dA;
 
     if(dir == 0)
-        dA = xp[1]-xm[1];
+        dA = xm[0]*(xp[1]-xm[1]);
     else if(dir == 1)
         dA = xp[0]-xm[0];
     else

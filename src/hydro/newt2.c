@@ -116,16 +116,21 @@ void wave_speeds_newt2(double *prim1, double *prim2, double *sL,
                         double *sR, double *sC, double x[2], int dir,
                         struct parList *pars)
 {
+    double h1, h2, igam[3][3];
+    geom_igam(x, igam);
+    h1 = 1.0/sqrt(igam[0][0]);
+    h2 = 1.0/sqrt(igam[1][1]);
+
     double rho1 = prim1[RHO];
     double P1 = prim1[PPP];
-    double v11 = prim1[VX1];
-    double v12 = prim1[VX2];
+    double v11 = prim1[VX1] * h1;
+    double v12 = prim1[VX2] * h2;
     double rho2 = prim2[RHO];
     double P2 = prim2[PPP];
-    double v21 = prim2[VX1];
-    double v22 = prim2[VX2];
+    double v21 = prim2[VX1] * h1;
+    double v22 = prim2[VX2] * h2;
     double adind = pars->gammalaw;
-
+    
     double cs1 = sqrt(adind*P1/rho1);
     double cs2 = sqrt(adind*P2/rho2);
 
@@ -162,6 +167,11 @@ void wave_speeds_newt2(double *prim1, double *prim2, double *sL,
 double mindt_newt2(double *prim, double x[2], double dx[2], 
                     struct parList *pars)
 {
+    double hh1, hh2, igam[3][3];
+    geom_igam(x, igam);
+    hh1 = sqrt(igam[0][0]);
+    hh2 = sqrt(igam[1][1]);
+
     double rho = prim[RHO];
     double P = prim[PPP];
     double vx1 = prim[VX1];
@@ -170,10 +180,10 @@ double mindt_newt2(double *prim, double x[2], double dx[2],
 
     double cs = sqrt(adind*P/rho);
     
-    double s1l = fabs(vx1 - cs);
-    double s1r = fabs(vx1 + cs);
-    double s2l = fabs(vx2 - cs);
-    double s2r = fabs(vx2 + cs);
+    double s1l = fabs(vx1 - cs*hh1);
+    double s1r = fabs(vx1 + cs*hh1);
+    double s2l = fabs(vx2 - cs*hh2);
+    double s2r = fabs(vx2 + cs*hh2);
 
     double s1 = s1l > s1r ? s1l : s1r;
     double s2 = s2l > s2r ? s2l : s2r;

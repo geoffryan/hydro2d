@@ -21,11 +21,14 @@ void initial_isentrope(double *prim, double x[2], int nq, struct parList *pars)
 
     GAM = pars->gammalaw;
     K = P0 / pow(rho0, GAM);
-    dx = (x[0]*cos(phi)+x[1]*sin(phi)-x0)/L;
     cs = sqrt(GAM*P0/rho0);
 
     J = -2.0 * cs / (GAM-1.0); 
 
+    if(pars->geom == 1)
+        dx = (x[0]*cos(x[1])*cos(phi)+x[0]*sin(x[1])*sin(phi)-x0)/L;
+    else
+        dx = (x[0]*cos(phi)+x[1]*sin(phi)-x0)/L;
     rho = rho0;
     P = P0;
     v = 0.0;
@@ -38,10 +41,21 @@ void initial_isentrope(double *prim, double x[2], int nq, struct parList *pars)
         v = J +  2.0 * cs / (GAM-1.0);
     }
 
-    double vx1, vx2;
+    double vx1, vx2, vx, vy;;
+    
+    vx = v*cos(phi);
+    vy = v*sin(phi);
 
-    vx1 = v*cos(phi);
-    vx2 = v*sin(phi);
+    if(pars->geom == 1)
+    {
+        vx1 = cos(x[1])*vx + sin(x[1])*vy;
+        vx2 = (-sin(x[1])*vx + cos(x[1])*vy) / x[0];
+    }
+    else
+    {
+        vx1 = vx;
+        vx2 = vy;
+    }
 
     prim[RHO] = rho;
     prim[PPP] = P;
