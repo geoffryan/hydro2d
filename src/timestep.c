@@ -47,7 +47,7 @@ double get_dt(struct grid *g, struct parList *pars)
            
             double dx[2] = {xp[0]-xm[0], xp[1]-xm[1]};
 
-            double dt = mindt(&(g->prim[nq*(nx1*i+j)]), x, dx, pars);
+            double dt = mindt(&(g->prim[nq*(nx2*i+j)]), x, dx, pars);
 
             dtmin = dt < dtmin ? dt : dtmin;
         }
