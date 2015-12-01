@@ -1,4 +1,8 @@
 # Generic Makefile, courtesy of Brian Farris 2013
+#
+# THERE SHOULD BE NO NEED TO EDIT THIS MAKEFILE.
+#
+# ALL MACHINE SPECIFIC FLAGS/PATHS ARE SET IN Makefile.in
 
 MAKEFILE_IN = $(PWD)/Makefile.in
 include $(MAKEFILE_IN)
@@ -21,6 +25,7 @@ DEBUG    = -g
 CFLAGS   += -O3 -Wall -c $(DEBUG) -DVERSION=\"$(GIT_VERSION)\"
 LDFLAGS  = -lm
 
+#HDF5 Installation - specified in Makefile.in
 CFLAGS += -I$(H5DIR)/include
 LDFLAGS += -L$(H5DIR)/lib -lhdf5
 

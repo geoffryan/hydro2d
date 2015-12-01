@@ -1,7 +1,8 @@
 # 2D Hydrodynamics
 
 This is a test code to play around with geometry implementations in
-hydrodynamic codes.
+hydrodynamic codes.  It solves the two dimensional adiabatic Euler equations
+in arbitrary geometety, in theory.
 
 ## Installation:
 
