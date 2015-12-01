@@ -3,8 +3,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import readCheckpoint as rc
 
+
+
 def plot2DSingle(fig, ax, X1, X2, dat, title=None):
-    im = ax.pcolormesh(X1, X2, dat, cmap=plt.cm.viridis)
+    try:
+        im = ax.pcolormesh(X1, X2, dat, cmap=plt.cm.viridis)
+    except AttributeError:
+        im = ax.pcolormesh(X1, X2, dat, cmap=plt.cm.afmhot)
     ax.set_xlabel(r'$x^1$')
     ax.set_ylabel(r'$x^2$')
     fig.colorbar(im, ax=ax)

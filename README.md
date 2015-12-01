@@ -18,4 +18,10 @@ edit it at any time.
 
 Sample parfiles are included in `parfiles/`.
 
+## Visualization & Utilities
+
+Some python scripts for plotting and examining output are included in `vis/`.
+The `h5py` module is required for reading the HDF5 format output, and `numpy`
+and `matplotlib` are used for plotting and data manipulation.
+
 
