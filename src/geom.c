@@ -9,12 +9,21 @@ int set_geometry(struct parList *par)
 
     if(choice == 0)
     {
-        geom_CM = &geom_CM_flat_xyz;
-        geom_dA = &geom_dA_flat_xyz;
-        geom_dV = &geom_dV_flat_xyz;
-        geom_gam = &geom_gam_flat_xyz;
-        geom_igam = &geom_igam_flat_xyz;
-        geom_dgam = &geom_dgam_flat_xyz;
+        geom_CM = &geom_CM_cart_xyz;
+        geom_dA = &geom_dA_cart_xyz;
+        geom_dV = &geom_dV_cart_xyz;
+        geom_gam = &geom_gam_cart_xyz;
+        geom_igam = &geom_igam_cart_xyz;
+        geom_dgam = &geom_dgam_cart_xyz;
+    }
+    else if(choice == 1)
+    {
+        geom_CM = &geom_CM_cyl_rpz;
+        geom_dA = &geom_dA_cyl_rpz;
+        geom_dV = &geom_dV_cyl_rpz;
+        geom_gam = &geom_gam_cyl_rpz;
+        geom_igam = &geom_igam_cyl_rpz;
+        geom_dgam = &geom_dgam_cyl_rpz;
     }
     else
     {

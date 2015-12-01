@@ -12,11 +12,18 @@ void (*geom_dgam)(double x[], double dgam[2][3][3]);
 
 int set_geometry(struct parList *par);
 
-void geom_CM_flat_xyz(double x1[], double x2[], double xc[]);
-double geom_dA_flat_xyz(double x1[], double x2[], int dir);
-double geom_dV_flat_xyz(double x1[], double x2[]);
-void geom_gam_flat_xyz(double x[], double gam[3][3]);
-void geom_igam_flat_xyz(double x[], double gam[3][3]);
-void geom_dgam_flat_xyz(double x[], double gam[2][3][3]);
+void geom_CM_cart_xyz(double x1[], double x2[], double xc[]);
+double geom_dA_cart_xyz(double x1[], double x2[], int dir);
+double geom_dV_cart_xyz(double x1[], double x2[]);
+void geom_gam_cart_xyz(double x[], double gam[3][3]);
+void geom_igam_cart_xyz(double x[], double gam[3][3]);
+void geom_dgam_cart_xyz(double x[], double gam[2][3][3]);
+
+void geom_CM_cyl_rpz(double x1[], double x2[], double xc[]);
+double geom_dA_cyl_rpz(double x1[], double x2[], int dir);
+double geom_dV_cyl_rpz(double x1[], double x2[]);
+void geom_gam_cyl_rpz(double x[], double gam[3][3]);
+void geom_igam_cyl_rpz(double x[], double gam[3][3]);
+void geom_dgam_cyl_rpz(double x[], double gam[2][3][3]);
 
 #endif

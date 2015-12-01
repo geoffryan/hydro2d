@@ -153,7 +153,7 @@ void calc_prim(struct grid *g, struct parList *pars)
             geom_CM(xm,xp,x);
             double dV = geom_dV(xm,xp);
 
-            cons2prim(&(g->prim[nq*(nx2*i+j)]), &(g->cons[nq*(nx2*i+j)]), 
+            cons2prim(&(g->cons[nq*(nx2*i+j)]), &(g->prim[nq*(nx2*i+j)]), 
                         x, dV, pars);
         }
 }

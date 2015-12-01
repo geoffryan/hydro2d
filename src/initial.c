@@ -14,6 +14,10 @@ int set_initial(struct parList *par)
 
     if(choice == 0)
         initial_value = &initial_uniform;
+    else if(choice == 1)
+        initial_value = &initial_isentrope;
+    else if(choice == 2)
+        initial_value = &initial_shocktube;
     else
     {
         err++;

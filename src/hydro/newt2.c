@@ -42,7 +42,6 @@ void cons2prim_newt2(double *cons, double *prim, double x[2], double dV,
 
     double m2 = igam[0][0]*mx1*mx1 + igam[1][1]*mx2*mx2 + 2*igam[0][1]*mx1*mx2;
 
-
     prim[RHO] = rho;
     prim[PPP] = (adind-1.0)*(en - 0.5*m2/rho);
     prim[VX1] = (igam[0][0]*mx1 + igam[0][1]*mx2) / rho;

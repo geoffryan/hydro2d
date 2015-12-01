@@ -10,5 +10,7 @@ int set_initial(struct parList *par);
 void initialize_grid(struct grid *g, struct parList *pars);
 
 void initial_uniform(double *prim, double x[2], int nq, struct parList *par);
+void initial_isentrope(double *prim, double x[2], int nq, struct parList *par);
+void initial_shocktube(double *prim, double x[2], int nq, struct parList *par);
 
 #endif

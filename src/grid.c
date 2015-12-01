@@ -1,8 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "par.h"
+#include "geom.h"
 #include "grid.h"
+#include "par.h"
 
 //Local Functions
 double minmod(double a, double b, double c);
@@ -71,7 +72,7 @@ void free_grid(struct grid *g)
 }
 
 void interpolate_constant(struct grid *g, int i, int j, int dir,
-                            double primL[], double primR[])
+                        double primL[], double primR[], struct parList *par)
 {
     int q;
     int nq = g->nq;
@@ -106,44 +107,80 @@ void interpolate_constant(struct grid *g, int i, int j, int dir,
 }
 
 void interpolate_plm(struct grid *g, int i, int j, int dir,
-                            double primL[], double primR[])
+                        double primL[], double primR[], struct parList *par)
 {
-    //TODO: Write this.
-    /*
-    int i,j;
-    int nx1 = g->nx1;
-    int nx2 = g->nx2;
+    int q;
     int nq = g->nq;
-    double PLM = g->PLM;
+    int nx2 = g->nx2;
+    int iLL, jLL, iL, jL, iR, jR, iRR, jRR, iRRR, jRRR;
+    double plm = par->plm;
 
-    for(j=0; j<nq; j++)
+    if(dir == 0)
     {
-        double dR = 2*(g->prim[1*nq+j] - g->prim[0*nq+j]) / (g->x[2]-g->x[0]);
-        g->grad[j] = dR;
+        iLL = i-2;
+        iL = i-1;
+        iR = i;
+        iRR = i+1;
+        iRRR = i+2;
+        jLL = j;
+        jL = j;
+        jR = j;
+        jRR = j;
+        jRRR = j;
     }
-    for(i=1; i<nx-1; i++)
+    else if(dir == 1)
     {
-        double idxL = 2.0 / (g->x[i+1] - g->x[i-1]);
-        double idxC = 2.0 / (g->x[i+2] + g->x[i+1] - g->x[i] - g->x[i-1]);
-        double idxR = 2.0 / (g->x[i+2] - g->x[i]);
-        int id = nq*i;
-        
-        for(j=0; j<nq; j++)
-        {
-            double SL = (g->prim[id   +j] - g->prim[id-nq+j]) * idxL;
-            double SC = (g->prim[id+nq+j] - g->prim[id-nq+j]) * idxC;
-            double SR = (g->prim[id+nq+j] - g->prim[id   +j]) * idxR;
-            
-            g->grad[id+j] = minmod(PLM*SL, SC, PLM*SR);
-        }
+        iLL = i;
+        iL = i;
+        iR = i;
+        iRR = i;
+        iRRR = i;
+        jLL = j-2;
+        jL = j-1;
+        jR = j;
+        jRR = j+1;
+        jRRR = j+2;
     }
-    for(j=0; j<nq; j++)
+    else
     {
-        double dL = 2*(g->prim[(nx-1)*nq+j] - g->prim[(nx-2)*nq+j])
-                        / (g->x[nx]-g->x[nx-2]);
-        g->grad[j] = dL;
+        printf("ERROR - interpolate plm has bad dir=%d\n", dir);
+        return;
     }
-    */
+
+    double xfLL[2] = {g->x1[iLL], g->x2[jLL]};
+    double xfL[2] = {g->x1[iL], g->x2[jL]};
+    double xfC[2] = {g->x1[iR], g->x2[jR]};
+    double xfR[2] = {g->x1[iRR], g->x2[jRR]};
+    double xfRR[2] = {g->x1[iRRR], g->x2[jRRR]};
+    double xLL[2], xL[2], xR[2], xRR[2];
+    geom_CM(xfLL, xfL, xLL);
+    geom_CM(xfL, xfC, xL);
+    geom_CM(xfC, xfR, xR);
+    geom_CM(xfR, xfRR, xRR);
+
+    double idxLL = 1.0/(xL[dir]-xLL[dir]);
+    double idxLC = 1.0/(xR[dir]-xLL[dir]);
+    double idxC = 1.0/(xR[dir]-xL[dir]);
+    double idxRC = 1.0/(xRR[dir]-xL[dir]);
+    double idxRR = 1.0/(xRR[dir]-xR[dir]);
+
+    double sL, sC, sR, gradL, gradR;
+
+    for(q=0; q<nq; q++)
+    {
+        sL = (g->prim[nq*(nx2*iL+jL)+q] - g->prim[nq*(nx2*iLL+jLL)+q])*idxLL;
+        sC = (g->prim[nq*(nx2*iR+jR)+q] - g->prim[nq*(nx2*iLL+jLL)+q])*idxLC;
+        sR = (g->prim[nq*(nx2*iR+jR)+q] - g->prim[nq*(nx2*iL+jL)+q])*idxC;
+        gradL = minmod(plm*sL, sC, plm*sR);
+
+        sL = (g->prim[nq*(nx2*iR+jR)+q] - g->prim[nq*(nx2*iL+jL)+q])*idxC;
+        sC = (g->prim[nq*(nx2*iRR+jRR)+q] - g->prim[nq*(nx2*iL+jL)+q])*idxRC;
+        sR = (g->prim[nq*(nx2*iRR+jRR)+q] - g->prim[nq*(nx2*iR+jR)+q])*idxRR;
+        gradR = minmod(plm*sL, sC, plm*sR);
+
+        primL[q] = g->prim[nq*(nx2*iL+jL)+q] + gradL*(xfC[dir]-xL[dir]);
+        primR[q] = g->prim[nq*(nx2*iR+jR)+q] + gradR*(xfC[dir]-xR[dir]);
+    }
 }
 
 void copy_to_rk(struct grid *g)

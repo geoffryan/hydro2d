@@ -4,8 +4,8 @@ Hydro       0    // 0 Newtonian
 Geometry    0    // 0 CartXYZ, 1 CylRPZ
 EOS         0    // 0 Ideal Gamma-law gas.
 Cool        0    // 0 No Cooling
-Recon       0    // 0 PCM, 1 PLM
-Riemann     0    // 0 Lax-Friedrichs, 1 HLL
+Recon       1    // 0 PCM, 1 PLM
+Riemann     1    // 0 Lax-Friedrichs, 1 HLL
 Timestep    0    // 0 Forward-Euler, 1 RK2-MP, 2 RK2-TVD, 3 RK3-TVD
 
 Nx1         64   // Number of zones
@@ -15,11 +15,11 @@ Ncons       4    // Number of conserved quantities
 Npass       0    // Number of passive quantities
 
 Tmin        0.0
-Tmax        0.2
-X1min       0.2466705
+Tmax        1.0
+X1min       -0.2
 X1max       1.0
-X2min       0.0
-X2max       6.28318530718
+X2min       -0.2
+X2max       1.0   //6.28318530718
 
 IO             1    //0 ASCII, 1 HDF5
 NumCheckpoints 100
@@ -33,13 +33,13 @@ PLM         1.5
 CFL         0.5
 GammaLaw    1.666666666
 
-Init        0     // 0 Uniform, 1 Isentrope, 2 Shocktube
-InitPar1    1.0   // Rho
-InitPar2    1.0   // P 
-InitPar3    0.0   // vx1
-InitPar4    0.0   // vx2
-InitPar5    0.0   // 
-InitPar6    0.0   // 
+Init        1     // 0 Uniform, 1 Isentrope
+InitPar1    1.0   // Rho0
+InitPar2    1.0   // P0 
+InitPar3    0.1   // x0 Pulse Location
+InitPar4    0.15   // L Pulse width
+InitPar5    1.0   // a Pulse strength
+InitPar6    1.0   // phi Pulse direction
 InitPar7    0.0   // 
 InitPar8    0.0   //
 
