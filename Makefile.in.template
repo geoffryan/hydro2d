@@ -1,6 +1,14 @@
 # Machine and build specific options for Hydro2D.
 
+# C Compiler
 CC = gcc
+
+# HDF5 Installation
 H5DIR = /usr/local
+
+# Installation Directory (optional)
+INSTALL_DIR = 
+
+# Other flags (optional)
 CFLAGS = 
 
