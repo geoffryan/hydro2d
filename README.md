@@ -13,6 +13,10 @@ your local HDF5 installation and specify your C compiler.  Then just run
 `Makefile.in` is ignored by the repo, it is machine specific, so feel free to 
 edit it at any time.
 
+To copy the executable, parfiles, and visualization scripts into another
+directory set the `INSTALL_DIR` directory in `Makefile.in` and run 
+`make install`.
+
 ## Running:
 
     $ bin/hydro2d myparfile.par
