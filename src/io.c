@@ -122,6 +122,8 @@ void io_print_grid_ascii(struct grid *g, char filename[])
     int nx1 = g->nx1;
     int nx2 = g->nx2;
     int nq = g->nq;
+    int d1 = g->d1;
+    int d2 = g->d2;
 
     fprintf(f, "### Data ###\n");
 
@@ -141,9 +143,9 @@ void io_print_grid_ascii(struct grid *g, char filename[])
         {
             fprintf(f, "%d %d", i, j);
             for(q=0; q<nq; q++)
-                fprintf(f, " %.12g", g->prim[nq*(nx2*i+j)+q]);
+                fprintf(f, " %.12g", g->prim[d1*i+d2*j+q]);
             for(q=0; q<nq; q++)
-                fprintf(f, " %.12g", g->cons[nq*(nx2*i+j)+q]);
+                fprintf(f, " %.12g", g->cons[d1*i+d2*j+q]);
             fprintf(f, "\n");
         }
 

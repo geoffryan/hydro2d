@@ -47,6 +47,9 @@ void make_grid(struct grid *g, struct parList *pars)
     g->nq = pars->nc + pars->np;
     g->PLM = pars->plm;
 
+    g->d1 = g->nx2 * g->nq;
+    g->d2 = g->nq;
+
     g->x1 = (double *) malloc((g->nx1+1) * sizeof(double));
     g->x2 = (double *) malloc((g->nx2+1) * sizeof(double));
     g->prim = (double *) malloc(g->nx1 * g->nx2 * g->nq * sizeof(double));
@@ -76,7 +79,8 @@ void interpolate_constant(struct grid *g, int i, int j, int dir,
 {
     int q;
     int nq = g->nq;
-    int nx2 = g->nx2;
+    int d1 = g->d1;
+    int d2 = g->d2;
     int iL, jL, iR, jR;
 
     if(dir == 0)
@@ -101,8 +105,8 @@ void interpolate_constant(struct grid *g, int i, int j, int dir,
 
     for(q=0; q<nq; q++)
     {
-        primL[q] = g->prim[nq*(nx2*iL+jL)+q];
-        primR[q] = g->prim[nq*(nx2*iR+jR)+q];
+        primL[q] = g->prim[d1*iL + d2*jL + q];
+        primR[q] = g->prim[d1*iR + d2*jR + q];
     }
 }
 
@@ -111,7 +115,8 @@ void interpolate_plm(struct grid *g, int i, int j, int dir,
 {
     int q;
     int nq = g->nq;
-    int nx2 = g->nx2;
+    int d1 = g->d1;
+    int d2 = g->d2;
     int iLL, jLL, iL, jL, iR, jR, iRR, jRR, iRRR, jRRR;
     double plm = par->plm;
 
@@ -168,18 +173,18 @@ void interpolate_plm(struct grid *g, int i, int j, int dir,
 
     for(q=0; q<nq; q++)
     {
-        sL = (g->prim[nq*(nx2*iL+jL)+q] - g->prim[nq*(nx2*iLL+jLL)+q])*idxLL;
-        sC = (g->prim[nq*(nx2*iR+jR)+q] - g->prim[nq*(nx2*iLL+jLL)+q])*idxLC;
-        sR = (g->prim[nq*(nx2*iR+jR)+q] - g->prim[nq*(nx2*iL+jL)+q])*idxC;
+        sL = (g->prim[d1*iL+d2*jL+q] - g->prim[d1*iLL+d2*jLL+q])*idxLL;
+        sC = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iLL+d2*jLL+q])*idxLC;
+        sR = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
         gradL = minmod(plm*sL, sC, plm*sR);
 
-        sL = (g->prim[nq*(nx2*iR+jR)+q] - g->prim[nq*(nx2*iL+jL)+q])*idxC;
-        sC = (g->prim[nq*(nx2*iRR+jRR)+q] - g->prim[nq*(nx2*iL+jL)+q])*idxRC;
-        sR = (g->prim[nq*(nx2*iRR+jRR)+q] - g->prim[nq*(nx2*iR+jR)+q])*idxRR;
+        sL = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
+        sC = (g->prim[d1*iRR+d2*jRR+q] - g->prim[d1*iL+d2*jL+q])*idxRC;
+        sR = (g->prim[d1*iRR+d2*jRR+q] - g->prim[d1*iR+d2*jR+q])*idxRR;
         gradR = minmod(plm*sL, sC, plm*sR);
 
-        primL[q] = g->prim[nq*(nx2*iL+jL)+q] + gradL*(xfC[dir]-xL[dir]);
-        primR[q] = g->prim[nq*(nx2*iR+jR)+q] + gradR*(xfC[dir]-xR[dir]);
+        primL[q] = g->prim[d1*iL+d2*jL+q] + gradL*(xfC[dir]-xL[dir]);
+        primR[q] = g->prim[d1*iR+d2*jR+q] + gradR*(xfC[dir]-xR[dir]);
     }
 }
 

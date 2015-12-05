@@ -33,7 +33,8 @@ double get_dt(struct grid *g, struct parList *pars)
     int i,j;
     int nx1 = g->nx1;
     int nx2 = g->nx2;
-    int nq = g->nq;
+    int d1 = g->d1;
+    int d2 = g->d2;
 
     double dtmin = 1.0e100;
 
@@ -47,7 +48,7 @@ double get_dt(struct grid *g, struct parList *pars)
            
             double dx[2] = {xp[0]-xm[0], xp[1]-xm[1]};
 
-            double dt = mindt(&(g->prim[nq*(nx2*i+j)]), x, dx, pars);
+            double dt = mindt(&(g->prim[d1*i+d2*j]), x, dx, pars);
 
             dtmin = dt < dtmin ? dt : dtmin;
         }
@@ -114,9 +115,10 @@ void step_rk3_tvd(struct grid *g, double dt, struct parList *pars)
 void calc_cons(struct grid *g, struct parList *pars)
 {
     int i, j;
-    int nq = g->nq;
     int nx1 = g->nx1;
     int nx2 = g->nx2;
+    int d1 = g->d1;
+    int d2 = g->d2;
 
     for(i=0; i<nx1; i++)
         for(j=0; j<nx2; j++)
@@ -127,7 +129,7 @@ void calc_cons(struct grid *g, struct parList *pars)
             geom_CM(xm,xp,x);
             double dV = geom_dV(xm,xp);
 
-            prim2cons(&(g->prim[nq*(nx2*i+j)]), &(g->cons[nq*(nx2*i+j)]), 
+            prim2cons(&(g->prim[d1*i+d2*j]), &(g->cons[d1*i+d2*j]), 
                         x, dV, pars);
         }
 }
@@ -135,9 +137,10 @@ void calc_cons(struct grid *g, struct parList *pars)
 void calc_prim(struct grid *g, struct parList *pars)
 {
     int i, j;
-    int nq = g->nq;
     int nx1 = g->nx1;
     int nx2 = g->nx2;
+    int d1 = g->d1;
+    int d2 = g->d2;
 
     double xm[2] = {0,0};
     double xp[2] = {0,0};
@@ -153,7 +156,7 @@ void calc_prim(struct grid *g, struct parList *pars)
             geom_CM(xm,xp,x);
             double dV = geom_dV(xm,xp);
 
-            cons2prim(&(g->cons[nq*(nx2*i+j)]), &(g->prim[nq*(nx2*i+j)]), 
+            cons2prim(&(g->cons[d1*i+d2*j]), &(g->prim[d1*i+d2*j]), 
                         x, dV, pars);
         }
 }
