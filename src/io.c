@@ -159,7 +159,7 @@ void io_print_header_hdf5(hid_t id)
 void io_print_pars_hdf5(struct parList *par, hid_t id)
 {
     io_write_attr_hdf5(id, "Hydro", VAR_INT, &(par->hydro), 0);
-    io_write_attr_hdf5(id, "Geom", VAR_INT, &(par->geom), 0);
+    io_write_attr_hdf5(id, "Geometry", VAR_INT, &(par->geom), 0);
     io_write_attr_hdf5(id, "EOS",   VAR_INT, &(par->eos), 0);
     io_write_attr_hdf5(id, "Cool",  VAR_INT, &(par->cool), 0);
     io_write_attr_hdf5(id, "Recon",  VAR_INT, &(par->recon), 0);
