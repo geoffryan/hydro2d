@@ -128,6 +128,7 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
             double x[2];
             geom_CM(xm, xp, x);
             double dA = geom_dA(xm, xp, 0);
+            double hn = geom_J(x) / geom_J2(x,0);
 
             reconstruction(g, i, j, 0, primL, primR, pars);
             /*
@@ -161,8 +162,8 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
 
             for(q=0; q<nq; q++)
             {
-                g->cons[nq*(nx2*(i-1)+j)+q] -= F[q] * dA * dt;
-                g->cons[nq*(nx2* i   +j)+q] += F[q] * dA * dt;
+                g->cons[nq*(nx2*(i-1)+j)+q] -= F[q] * hn * dA * dt;
+                g->cons[nq*(nx2* i   +j)+q] += F[q] * hn * dA * dt;
             }
         }
     
@@ -176,6 +177,8 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
             double x[2];
             geom_CM(xm, xp, x);
             double dA = geom_dA(xm, xp, 1);
+
+            double hn = geom_J(x) / geom_J2(x,1);
             
             reconstruction(g, i, j, 1, primL, primR, pars);
             riemann_flux(primL, primR, F, nq, x, 1, pars);
@@ -188,8 +191,8 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
 
             for(q=0; q<nq; q++)
             {
-                g->cons[nq*(nx2*i+j-1)+q] -= F[q] * dA * dt;
-                g->cons[nq*(nx2*i+ j )+q] += F[q] * dA * dt;
+                g->cons[nq*(nx2*i+j-1)+q] -= F[q] * hn * dA * dt;
+                g->cons[nq*(nx2*i+ j )+q] += F[q] * hn * dA * dt;
             }
         }
 }

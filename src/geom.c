@@ -12,6 +12,8 @@ int set_geometry(struct parList *par)
         geom_CM = &geom_CM_cart_xyz;
         geom_dA = &geom_dA_cart_xyz;
         geom_dV = &geom_dV_cart_xyz;
+        geom_J = &geom_J_cart_xyz;
+        geom_J2 = &geom_J2_cart_xyz;
         geom_gam = &geom_gam_cart_xyz;
         geom_igam = &geom_igam_cart_xyz;
         geom_dgam = &geom_dgam_cart_xyz;
@@ -21,6 +23,8 @@ int set_geometry(struct parList *par)
         geom_CM = &geom_CM_cyl_rpz;
         geom_dA = &geom_dA_cyl_rpz;
         geom_dV = &geom_dV_cyl_rpz;
+        geom_J = &geom_J_cyl_rpz;
+        geom_J2 = &geom_J2_cyl_rpz;
         geom_gam = &geom_gam_cyl_rpz;
         geom_igam = &geom_igam_cyl_rpz;
         geom_dgam = &geom_dgam_cyl_rpz;

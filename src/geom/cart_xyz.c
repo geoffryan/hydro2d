@@ -25,6 +25,16 @@ double geom_dV_cart_xyz(double xm[], double xp[])
     return (xp[0]-xm[0])*(xp[1]-xm[1]);
 }
 
+double geom_J_cart_xyz(double x[])
+{
+    return 1.0;
+}
+
+double geom_J2_cart_xyz(double x[], int dir)
+{
+    return 1.0;
+}
+
 void geom_gam_cart_xyz(double x[], double gam[3][3])
 {
     gam[0][0] = 1.0;

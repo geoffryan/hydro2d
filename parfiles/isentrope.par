@@ -1,7 +1,7 @@
 #Parameter File for HYDRO2D
 
 Hydro       0    // 0 Newtonian
-Geometry    0    // 0 CartXYZ, 1 CylRPZ
+Geometry    1    // 0 CartXYZ, 1 CylRPZ
 EOS         0    // 0 Ideal Gamma-law gas.
 Cool        0    // 0 No Cooling
 Recon       0    // 0 PCM, 1 PLM
@@ -16,18 +16,18 @@ Npass       0    // Number of passive quantities
 
 Tmin        0.0
 Tmax        1.0
-X1min       0.0
+X1min       0.2
 X1max       1.0
 X2min       0.0
-X2max       1.0 //6.2831853071795864769
+X2max       6.2831853071795864769
 
 IO             1    //0 ASCII, 1 HDF5
 NumCheckpoints 100
 
 BCX1Inner   2    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
 BCX1Outer   2    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
-BCX2Inner   2    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
-BCX2Outer   2    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
+BCX2Inner   3    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
+BCX2Outer   3    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
 
 PLM         1.5
 CFL         0.5
@@ -39,7 +39,7 @@ InitPar2    1.0   // P0
 InitPar3    0.4   // x0 Pulse Location
 InitPar4    0.1   // L Pulse width
 InitPar5    1.0   // a Pulse strength
-InitPar6    1.0   // phi Pulse direction
+InitPar6    0.0   // phi Pulse direction
 InitPar7    0.0   // 
 InitPar8    0.0   //
 
