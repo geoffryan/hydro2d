@@ -1,7 +1,7 @@
 #Parameter File for HYDRO2D
 
-Hydro       0    // 0 Newtonian
-Geometry    2    // 0 CartXYZ, 1 CylRPZ, 2 SphTPR
+Hydro       1    // 0 Newtonian, 1 NewtonianB
+Geometry    1    // 0 CartXYZ, 1 CylRPZ, 2 SphTPR
 EOS         0    // 0 Ideal Gamma-law gas.
 Cool        0    // 0 No Cooling
 Recon       0    // 0 PCM, 1 PLM
@@ -15,9 +15,9 @@ Ncons       4    // Number of conserved quantities
 Npass       0    // Number of passive quantities
 
 Tmin        0.0
-Tmax        10.0
+Tmax        1.0
 X1min       0.0
-X1max       3.1415926535897932385
+X1max       1.0 //3.1415926535897932385
 X2min       0.0
 X2max       6.2831853071795864769
 
@@ -25,7 +25,7 @@ IO             1    //0 ASCII, 1 HDF5
 NumCheckpoints 100
 
 BCX1Inner   0    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
-BCX1Outer   0    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
+BCX1Outer   1    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
 BCX2Inner   3    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
 BCX2Outer   3    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
 

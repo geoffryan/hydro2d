@@ -130,7 +130,7 @@ void calc_cons(struct grid *g, struct parList *pars)
             double dV = geom_dV(xm,xp);
 
             prim2cons(&(g->prim[d1*i+d2*j]), &(g->cons[d1*i+d2*j]), 
-                        x, dV, pars);
+                    x, dV, pars);
         }
 }
 

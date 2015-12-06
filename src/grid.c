@@ -3,6 +3,7 @@
 #include <math.h>
 #include "geom.h"
 #include "grid.h"
+#include "hydro.h"
 #include "par.h"
 
 //Local Functions
@@ -115,6 +116,8 @@ void interpolate_plm(struct grid *g, int i, int j, int dir,
 {
     int q;
     int nq = g->nq;
+    int nx1 = g->nx1;
+    int nx2 = g->nx2;
     int d1 = g->d1;
     int d2 = g->d2;
     int iLL, jLL, iL, jL, iR, jR, iRR, jRR, iRRR, jRRR;
@@ -132,6 +135,9 @@ void interpolate_plm(struct grid *g, int i, int j, int dir,
         jR = j;
         jRR = j;
         jRRR = j;
+
+        iLL = iLL >= 0 ? iLL : 0;
+        iRRR = iRRR <= nx1 ? iRRR : nx1;
     }
     else if(dir == 1)
     {
@@ -145,6 +151,9 @@ void interpolate_plm(struct grid *g, int i, int j, int dir,
         jR = j;
         jRR = j+1;
         jRRR = j+2;
+
+        jLL = jLL >= 0 ? jLL : 0;
+        jRRR = jRRR <= nx2 ? jRRR : nx2;
     }
     else
     {
@@ -162,6 +171,11 @@ void interpolate_plm(struct grid *g, int i, int j, int dir,
     geom_CM(xfL, xfC, xL);
     geom_CM(xfC, xfR, xR);
     geom_CM(xfR, xfRR, xRR);
+    
+    if((dir==0 && iLL==iL) || (dir==1 && jLL==jL))
+        xLL[dir] = 2 * xfL[dir] - xL[dir];
+    if((dir==0 && iRRR==iRR) || (dir==1 && jRRR==jRR))
+        xRR[dir] = 2 * xfR[dir] - xR[dir];
 
     double idxLL = 1.0/(xL[dir]-xLL[dir]);
     double idxLC = 1.0/(xR[dir]-xLL[dir]);
@@ -169,22 +183,66 @@ void interpolate_plm(struct grid *g, int i, int j, int dir,
     double idxRC = 1.0/(xRR[dir]-xL[dir]);
     double idxRR = 1.0/(xRR[dir]-xR[dir]);
 
-    double sL, sC, sR, gradL, gradR;
+    double sL, sC, sR, gradL[nq], gradR[nq];
+    int refl[nq];
+    reflectInds(dir, refl, nq);
+
+    if((dir==0 && iLL==iL) || (dir==1 && jLL==jL))
+        for(q=0; q<nq; q++)
+        {
+            if(refl[q])
+            {
+                sL = (g->prim[d1*iR+d2*jR+q] + g->prim[d1*iL+d2*jL+q])*idxLL;
+                sR = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
+                sC = (g->prim[d1*iR+d2*jR+q] + g->prim[d1*iL+d2*jL+q])*idxLC;
+            }
+            else
+            {
+                sL = 0.0;
+                sR = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
+                sC = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxLC;
+            }
+            gradL[q] = minmod(plm*sL, sC, plm*sR);
+        }
+    else
+        for(q=0; q<nq; q++)
+        {
+            sL = (g->prim[d1*iL+d2*jL+q] - g->prim[d1*iLL+d2*jLL+q])*idxLL;
+            sC = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iLL+d2*jLL+q])*idxLC;
+            sR = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
+            gradL[q] = minmod(plm*sL, sC, plm*sR);
+        }
+
+    if((dir==0 && iRRR==iRR) || (dir==1 && jRRR==jRR))
+        for(q=0; q<nq; q++)
+        {
+            if(refl[q])
+            {
+                sL = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
+                sR = (-g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxRR;
+                sC = (-g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxRC;
+            }
+            else
+            {
+                sL = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
+                sR = 0.0;
+                sC = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxRC;
+            }
+            gradR[q] = minmod(plm*sL, sC, plm*sR);
+        }
+    else
+        for(q=0; q<nq; q++)
+        {
+            sL = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
+            sC = (g->prim[d1*iRR+d2*jRR+q] - g->prim[d1*iL+d2*jL+q])*idxRC;
+            sR = (g->prim[d1*iRR+d2*jRR+q] - g->prim[d1*iR+d2*jR+q])*idxRR;
+            gradR[q] = minmod(plm*sL, sC, plm*sR);
+        }
 
     for(q=0; q<nq; q++)
     {
-        sL = (g->prim[d1*iL+d2*jL+q] - g->prim[d1*iLL+d2*jLL+q])*idxLL;
-        sC = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iLL+d2*jLL+q])*idxLC;
-        sR = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
-        gradL = minmod(plm*sL, sC, plm*sR);
-
-        sL = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
-        sC = (g->prim[d1*iRR+d2*jRR+q] - g->prim[d1*iL+d2*jL+q])*idxRC;
-        sR = (g->prim[d1*iRR+d2*jRR+q] - g->prim[d1*iR+d2*jR+q])*idxRR;
-        gradR = minmod(plm*sL, sC, plm*sR);
-
-        primL[q] = g->prim[d1*iL+d2*jL+q] + gradL*(xfC[dir]-xL[dir]);
-        primR[q] = g->prim[d1*iR+d2*jR+q] + gradR*(xfC[dir]-xR[dir]);
+        primL[q] = g->prim[d1*iL+d2*jL+q] + gradL[q]*(xfC[dir]-xL[dir]);
+        primR[q] = g->prim[d1*iR+d2*jR+q] + gradR[q]*(xfC[dir]-xR[dir]);
     }
 }
 

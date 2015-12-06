@@ -26,6 +26,16 @@ void initial_uniform(double *prim, double x[2], int nq, struct parList *par)
         vx2 = vy;
     }
 
+    if(par->hydro == 1)
+    {
+        double gam[3][3];
+        geom_gam(x, gam);
+        double lx1 = gam[0][0]*vx1 + gam[0][1]*vx2;
+        double lx2 = gam[1][0]*vx1 + gam[1][1]*vx2;
+        vx1 = lx1;
+        vx2 = lx2;
+    }
+
     prim[RHO] = rho0;
     prim[PPP] = P0;
     prim[VX1] = vx1;

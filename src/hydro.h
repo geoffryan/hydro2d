@@ -12,6 +12,7 @@ void (*wave_speeds)(double *prim1, double *prim2, double *sL, double *sR,
                     double *sC, double x[2], int dir, struct parList *pars);
 double (*mindt)(double *prim, double x[2], double dx[2],
                 struct parList *pars);
+void (*reflectInds)(int dir, int *inds, int nq);
 void (*Ustar)(double *prim, double *Us, double sK, double sC, double x[2],
                     struct parList *pars);
 
@@ -30,7 +31,24 @@ void wave_speeds_newt2(double *prim1, double *prim2, double *sL,
                             struct parList *pars);
 double mindt_newt2(double *prim, double x[2], double dx[2], 
                             struct parList *pars);
+void reflectInds_newt2(int dir, int *inds, int nq);
 void Ustar_newt2(double *prim, double *Us, double sK, double sC, 
                             double x[2], struct parList *pars);
 
+void prim2cons_newt2b(double *prim, double *cons, double x[2], double dV,
+                            struct parList *pars);
+void cons2prim_newt2b(double *cons, double *prim, double x[2], double dV,
+                            struct parList *pars);
+void flux_newt2b(double *prim, double *F, double x[2], int dir, 
+                            struct parList *pars);
+void add_source_newt2b(double *prim, double *cons, double x[2], double dVdt, 
+                            struct parList *pars);
+void wave_speeds_newt2b(double *prim1, double *prim2, double *sL, 
+                            double *sR, double *sC, double x[2], int dir,
+                            struct parList *pars);
+double mindt_newt2b(double *prim, double x[2], double dx[2], 
+                            struct parList *pars);
+void reflectInds_newt2b(int dir, int *inds, int nq);
+void Ustar_newt2b(double *prim, double *Us, double sK, double sC, 
+                            double x[2], struct parList *pars);
 #endif
