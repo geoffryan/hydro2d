@@ -19,7 +19,7 @@ int set_hydro(struct parList *pars)
         reflectInds = &reflectInds_newt2;
         Ustar = &Ustar_newt2;
     }
-    if(choice == 1)
+    else if(choice == 1)
     {
         prim2cons = &prim2cons_newt2b;
         cons2prim = &cons2prim_newt2b;
