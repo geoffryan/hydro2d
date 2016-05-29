@@ -84,9 +84,12 @@ void flux_newt2(double *prim, double *F, double x[2], int dir,
     }
 }
 
-void add_source_newt2(double *prim, double *cons, double x[2], double dVdt, 
-                struct parList *pars)
+void add_source_newt2(double *prim, double *cons, double xm[2], double xp[2],
+                        double dt, struct parList *pars)
 {
+
+    double x[2];
+    geom_CM(xm, xp, x)
 
     double igam[3][3];
     double dgam[2][3][3];

@@ -27,6 +27,8 @@ struct grid
     double *prim;
     double *cons;
     double *cons_rk;
+    double *prim_grad;
+    double *prim_grad2;
     double PLM;
 };
 
@@ -51,6 +53,8 @@ const static struct grid GRID_DEFAULT = {
     .x1 = NULL,
     .x2 = NULL,
     .prim = NULL,
+    .prim_grad = NULL,
+    .prim_grad2 = NULL,
     .cons = NULL,
     .cons_rk = NULL,
     .PLM = 1.5

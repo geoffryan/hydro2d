@@ -69,6 +69,23 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
             double dA = geom_dA(xm, xp, 0);
             double hn = geom_J(x) / geom_J2(x,0);
 
+            int nL = d1*(i-1)+d2*j;
+            int nR = d1*i+d2*j;
+
+            double xL[2] = {g->x1[i-1], g->x2[j]};
+            double xR[2] = {g->x1[i+1], g->x2[j+1]};
+            double xcL[2], xcR[2];
+            geom_CM(xL, xp, xcL);
+            geom_CM(xm, xR, xcR);
+
+            for(q=0; q<nq; q++)
+            {
+                primL[nq] = g->prim[nL+q]
+                            + (xp[0]-xcL[0]) * g->prim_grad[2*nL+0+q];
+                primR[nq] = g->prim[nR+q]
+                            + (xp[0]-xcR[0]) * g->prim_grad[2*nL+0+q];
+            }
+
             reconstruction(g, i, j, 0, primL, primR, pars);
 
             riemann_flux(primL, primR, F, nq, x, 0, pars);
@@ -121,12 +138,9 @@ void add_sources(struct grid *g, double dt, struct parList *pars)
         {
             double xm[2] = {g->x1[i], g->x2[j]};
             double xp[2] = {g->x1[i+1], g->x2[j+1]};
-            double x[2];
-            geom_CM(xm,xp,x);
-            double dV = geom_dV(xm,xp);
 
             add_source(&(g->prim[d1*i+d2*j]), &(g->cons[d1*i+d2*j]), 
-                        x, dV*dt, pars);
+                        xm, xp, dt, pars);
         }
 }
 
