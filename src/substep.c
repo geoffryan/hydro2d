@@ -83,12 +83,12 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
 
             for(q=0; q<nq; q++)
             {
-                primL[nq] = g->prim[nL+q]
+                primL[q] = g->prim[nL+q]
                             + (xL[0]-x[0]) * g->prim_grad[2*nL+0*nq+q]
                             + (xL[1]-x[1]) * g->prim_grad[2*nL+1*nq+q];
-                primR[nq] = g->prim[nR+q]
-                            + (xR[0]-x[0]) * g->prim_grad[2*nL+0*nq+q]
-                            + (xR[1]-x[1]) * g->prim_grad[2*nL+1*nq+q];
+                primR[q] = g->prim[nR+q]
+                            + (xR[0]-x[0]) * g->prim_grad[2*nR+0*nq+q]
+                            + (xR[1]-x[1]) * g->prim_grad[2*nR+1*nq+q];
             }
 
             riemann_flux(primL, primR, F, nq, x, 0, pars);
@@ -119,17 +119,17 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
             double dA = geom_dA(xm, xp, 1);
             double hn = geom_J(x) / geom_J2(x,1);
             
-            int nL = d1*(i-1)+d2*j;
+            int nL = d1*i+d2*(j-1);
             int nR = d1*i+d2*j;
 
             for(q=0; q<nq; q++)
             {
-                primL[nq] = g->prim[nL+q]
+                primL[q] = g->prim[nL+q]
                             + (xL[0]-x[0]) * g->prim_grad[2*nL+0*nq+q]
                             + (xL[1]-x[1]) * g->prim_grad[2*nL+1*nq+q];
-                primR[nq] = g->prim[nR+q]
-                            + (xR[0]-x[0]) * g->prim_grad[2*nL+0*nq+q]
-                            + (xR[1]-x[1]) * g->prim_grad[2*nL+1*nq+q];
+                primR[q] = g->prim[nR+q]
+                            + (xR[0]-x[0]) * g->prim_grad[2*nR+0*nq+q]
+                            + (xR[1]-x[1]) * g->prim_grad[2*nR+1*nq+q];
             }
 
             riemann_flux(primL, primR, F, nq, x, 1, pars);
@@ -153,6 +153,7 @@ void add_sources(struct grid *g, double dt, struct parList *pars)
     int ng22 = g->ng22;
     int d1 = g->d1;
     int d2 = g->d2;
+    int nq = g->nq;
 
     for(i=ng11; i<nx1-ng12; i++)
         for(j=ng21; j<nx2-ng22; j++)
@@ -161,7 +162,8 @@ void add_sources(struct grid *g, double dt, struct parList *pars)
             double xp[2] = {g->x1[i+1], g->x2[j+1]};
 
             add_source(&(g->prim[d1*i+d2*j]), &(g->cons[d1*i+d2*j]), 
-                        &(g->prim_grad[2*(d1*i+d2*j)]), xm, xp, dt, pars);
+                        &(g->prim_grad[2*(d1*i+d2*j)   ]), 
+                        &(g->prim_grad[2*(d1*i+d2*j)+nq]), xm, xp, dt, pars);
         }
 }
 

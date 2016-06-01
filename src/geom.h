@@ -45,4 +45,14 @@ void geom_gam_sph_tpr(double x[], double gam[3][3]);
 void geom_igam_sph_tpr(double x[], double gam[3][3]);
 void geom_dgam_sph_tpr(double x[], double gam[2][3][3]);
 
+void geom_CM_cyl_rpz_B(double x1[], double x2[], double xc[]);
+void geom_CM2_cyl_rpz_B(double x1[], double x2[], double xc[], int dir);
+double geom_dA_cyl_rpz_B(double x1[], double x2[], int dir);
+double geom_dV_cyl_rpz_B(double x1[], double x2[]);
+double geom_J_cyl_rpz_B(double x[]);
+double geom_J2_cyl_rpz_B(double x[], int dir);
+void geom_gam_cyl_rpz_B(double x[], double gam[3][3]);
+void geom_igam_cyl_rpz_B(double x[], double gam[3][3]);
+void geom_dgam_cyl_rpz_B(double x[], double gam[2][3][3]);
+
 #endif

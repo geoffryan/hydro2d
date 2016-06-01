@@ -30,6 +30,17 @@ int set_hydro(struct parList *pars)
         reflectInds = &reflectInds_newt2b;
         Ustar = &Ustar_newt2b;
     }
+    else if(choice == 2)
+    {
+        prim2cons = &prim2cons_newt2c;
+        cons2prim = &cons2prim_newt2c;
+        flux = &flux_newt2c;
+        add_source = &add_source_newt2c;
+        wave_speeds = &wave_speeds_newt2c;
+        mindt = &mindt_newt2c;
+        reflectInds = &reflectInds_newt2c;
+        Ustar = &Ustar_newt2c;
+    }
     else
     {
         err++;
