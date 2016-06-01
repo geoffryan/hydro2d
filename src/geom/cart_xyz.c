@@ -6,6 +6,12 @@ void geom_CM_cart_xyz(double xm[], double xp[], double xc[])
     xc[1] = 0.5*(xm[1]+xp[1]);
 }
 
+void geom_CM2_cart_xyz(double xm[], double xp[], double xc[], int dir)
+{
+    xc[0] = 0.5*(xm[0]+xp[0]);
+    xc[1] = 0.5*(xm[1]+xp[1]);
+}
+
 double geom_dA_cart_xyz(double xm[], double xp[], int dir)
 {
     double dA;

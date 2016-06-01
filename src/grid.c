@@ -56,6 +56,8 @@ void make_grid(struct grid *g, struct parList *pars)
     g->prim = (double *) malloc(g->nx1 * g->nx2 * g->nq * sizeof(double));
     g->cons = (double *) malloc(g->nx1 * g->nx2 * g->nq * sizeof(double));
     g->cons_rk = (double *) malloc(g->nx1 * g->nx2 * g->nq * sizeof(double));
+    g->prim_grad =  (double *) malloc(g->nx1 * g->nx2 * g->nq * 2 * sizeof(double));
+    g->prim_grad2 = (double *) malloc(g->nx1 * g->nx2 * g->nq * 2 * sizeof(double));
 
     int i;
     double dx1 = (g->x1max - g->x1min) / g->nx1_int;
@@ -73,32 +75,38 @@ void free_grid(struct grid *g)
     free(g->prim);
     free(g->cons);
     free(g->cons_rk);
+    free(g->prim_grad);
+    free(g->prim_grad2);
+}
+
+void calc_grad(struct grid *g, struct parList *par)
+{
+
+    int nx1 = g->nx1;
+    int nx2 = g->nx2;
+    int d1 = g->d1;
+    int d2 = g->d2;
+    int nq = g->nq;
+
+    int i,j;
+
+    for(i=0; i<nx1; i++)
+        for(j=0; j<nx2; j++)
+        {
+            reconstruction(g, i, j, 0, &(g->prim_grad[2*(d1*i+d2*j)+0*nq]), 
+                            &(g->prim_grad2[2*(d1*i+d2*j)+0*nq]), par);
+            reconstruction(g, i, j, 1, &(g->prim_grad[2*(d1*i+d2*j)+1*nq]), 
+                            &(g->prim_grad2[2*(d1*i+d2*j)+1*nq]), par);
+        }
 }
 
 void interpolate_constant(struct grid *g, int i, int j, int dir,
-                        double primL[], double primR[], struct parList *par)
+                        double gradlim[], double gradraw[], struct parList *par)
 {
     int q;
     int nq = g->nq;
-    int d1 = g->d1;
-    int d2 = g->d2;
-    int iL, jL, iR, jR;
 
-    if(dir == 0)
-    {
-        iL = i-1;
-        iR = i;
-        jL = j;
-        jR = j;
-    }
-    else if(dir == 1)
-    {
-        iL = i;
-        iR = i;
-        jL = j-1;
-        jR = j;
-    }
-    else
+    if(dir != 0 && dir != 1)
     {
         printf("ERROR - interpolate constant has bad dir=%d\n", dir);
         return;
@@ -106,13 +114,13 @@ void interpolate_constant(struct grid *g, int i, int j, int dir,
 
     for(q=0; q<nq; q++)
     {
-        primL[q] = g->prim[d1*iL + d2*jL + q];
-        primR[q] = g->prim[d1*iR + d2*jR + q];
+        gradraw[q] = 0.0;
+        gradlim[q] = 0.0;
     }
 }
 
 void interpolate_plm(struct grid *g, int i, int j, int dir,
-                        double primL[], double primR[], struct parList *par)
+                        double gradlim[], double gradraw[], struct parList *par)
 {
     int q;
     int nq = g->nq;
@@ -120,40 +128,28 @@ void interpolate_plm(struct grid *g, int i, int j, int dir,
     int nx2 = g->nx2;
     int d1 = g->d1;
     int d2 = g->d2;
-    int iLL, jLL, iL, jL, iR, jR, iRR, jRR, iRRR, jRRR;
+    int iL, jL, iR, jR;
     double plm = par->plm;
 
     if(dir == 0)
     {
-        iLL = i-2;
         iL = i-1;
-        iR = i;
-        iRR = i+1;
-        iRRR = i+2;
-        jLL = j;
+        iR = i+1;
         jL = j;
         jR = j;
-        jRR = j;
-        jRRR = j;
 
-        iLL = iLL >= 0 ? iLL : 0;
-        iRRR = iRRR <= nx1 ? iRRR : nx1;
+        iL  = iL  >= 0 ? iL  : 0;
+        iR  = iR  < nx1 ? iR  : nx1-1;
     }
     else if(dir == 1)
     {
-        iLL = i;
         iL = i;
         iR = i;
-        iRR = i;
-        iRRR = i;
-        jLL = j-2;
         jL = j-1;
-        jR = j;
-        jRR = j+1;
-        jRRR = j+2;
+        jR = j+1;
 
-        jLL = jLL >= 0 ? jLL : 0;
-        jRRR = jRRR <= nx2 ? jRRR : nx2;
+        jL  = jL  >= 0 ? jL  : 0;
+        jR  = jR  < nx2 ? jR  : nx2-1;
     }
     else
     {
@@ -161,89 +157,82 @@ void interpolate_plm(struct grid *g, int i, int j, int dir,
         return;
     }
 
-    double xfLL[2] = {g->x1[iLL], g->x2[jLL]};
-    double xfL[2] = {g->x1[iL], g->x2[jL]};
-    double xfC[2] = {g->x1[iR], g->x2[jR]};
-    double xfR[2] = {g->x1[iRR], g->x2[jRR]};
-    double xfRR[2] = {g->x1[iRRR], g->x2[jRRR]};
-    double xLL[2], xL[2], xR[2], xRR[2];
-    geom_CM(xfLL, xfL, xLL);
-    geom_CM(xfL, xfC, xL);
-    geom_CM(xfC, xfR, xR);
-    geom_CM(xfR, xfRR, xRR);
-    
-    if((dir==0 && iLL==iL) || (dir==1 && jLL==jL))
-        xLL[dir] = 2 * xfL[dir] - xL[dir];
-    if((dir==0 && iRRR==iRR) || (dir==1 && jRRR==jRR))
-        xRR[dir] = 2 * xfR[dir] - xR[dir];
+    double xLm[2] = {g->x1[iL], g->x2[jL]};
+    double xLp[2] = {g->x1[iL+1], g->x2[jL+1]};
+    double xCm[2] = {g->x1[i], g->x2[j]};
+    double xCp[2] = {g->x1[i+1], g->x2[j+1]};
+    double xRm[2] = {g->x1[iR], g->x2[jR]};
+    double xRp[2] = {g->x1[iR+1], g->x2[jR+1]};
 
-    double idxLL = 1.0/(xL[dir]-xLL[dir]);
-    double idxLC = 1.0/(xR[dir]-xLL[dir]);
-    double idxC = 1.0/(xR[dir]-xL[dir]);
-    double idxRC = 1.0/(xRR[dir]-xL[dir]);
-    double idxRR = 1.0/(xRR[dir]-xR[dir]);
+    double xL[2], xC[2], xR[2];
+    geom_CM(xLm, xLp, xL);
+    geom_CM(xCm, xCp, xC);
+    geom_CM(xRm, xRp, xR);
 
-    double sL, sC, sR, gradL[nq], gradR[nq];
+
+    //If at a domain edge, fix outer x[] to exactly mirror edge zone.
+    if(dir==0 && iL==i)
+        xL[dir] = 2*g->x1[0] - xC[dir];
+    if(dir==1 && jL==j)
+        xL[dir] = 2*g->x2[0] - xC[dir];
+    if(dir==0 && iR==i)
+        xR[dir] = 2*g->x1[nx1] - xC[dir];
+    if(dir==1 && jR==j)
+        xR[dir] = 2*g->x2[nx2] - xC[dir];
+
+    double idxCL = 1.0/(xC[dir]-xL[dir]);
+    double idxRL = 1.0/(xR[dir]-xL[dir]);
+    double idxRC = 1.0/(xR[dir]-xC[dir]);
+
+    double sL, sC, sR;
     int refl[nq];
     reflectInds(dir, refl, nq);
 
-    if((dir==0 && iLL==iL) || (dir==1 && jLL==jL))
+    if((dir==0 && iL==i) || (dir==1 && jL==j))
         for(q=0; q<nq; q++)
         {
             if(refl[q])
             {
-                sL = (g->prim[d1*iR+d2*jR+q] + g->prim[d1*iL+d2*jL+q])*idxLL;
-                sR = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
-                sC = (g->prim[d1*iR+d2*jR+q] + g->prim[d1*iL+d2*jL+q])*idxLC;
+                sL = (g->prim[d1*i +d2*j +q] + g->prim[d1*i +d2*j +q])*idxCL;
+                sR = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*i +d2*j +q])*idxRC;
+                sC = (g->prim[d1*iR+d2*jR+q] + g->prim[d1*i +d2*j +q])*idxRL;
             }
             else
             {
                 sL = 0.0;
-                sR = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
-                sC = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxLC;
+                sR = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*i +d2*j +q])*idxRC;
+                sC = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*i +d2*j +q])*idxRL;
             }
-            gradL[q] = minmod(plm*sL, sC, plm*sR);
+            gradraw[q] = sC;
+            gradlim[q] = minmod(plm*sL, sC, plm*sR);
         }
-    else
-        for(q=0; q<nq; q++)
-        {
-            sL = (g->prim[d1*iL+d2*jL+q] - g->prim[d1*iLL+d2*jLL+q])*idxLL;
-            sC = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iLL+d2*jLL+q])*idxLC;
-            sR = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
-            gradL[q] = minmod(plm*sL, sC, plm*sR);
-        }
-
-    if((dir==0 && iRRR==iRR) || (dir==1 && jRRR==jRR))
+    else if((dir==0 && i==iR) || (dir==1 && j==jR))
         for(q=0; q<nq; q++)
         {
             if(refl[q])
             {
-                sL = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
-                sR = (-g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxRR;
-                sC = (-g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxRC;
+                sL = ( g->prim[d1*i +d2*j +q] - g->prim[d1*iL+d2*jL+q])*idxCL;
+                sR = (-g->prim[d1*i +d2*j +q] - g->prim[d1*i +d2*j +q])*idxRC;
+                sC = (-g->prim[d1*i +d2*j +q] - g->prim[d1*iL+d2*jL+q])*idxRL;
             }
             else
             {
-                sL = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
+                sL = ( g->prim[d1*i +d2*j +q] - g->prim[d1*iL+d2*jL+q])*idxCL;
                 sR = 0.0;
-                sC = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxRC;
+                sC = ( g->prim[d1*i +d2*j +q] - g->prim[d1*iL+d2*jL+q])*idxRL;
             }
-            gradR[q] = minmod(plm*sL, sC, plm*sR);
+            gradraw[q] = sC;
+            gradlim[q] = minmod(plm*sL, sC, plm*sR);
         }
     else
         for(q=0; q<nq; q++)
         {
-            sL = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxC;
-            sC = (g->prim[d1*iRR+d2*jRR+q] - g->prim[d1*iL+d2*jL+q])*idxRC;
-            sR = (g->prim[d1*iRR+d2*jRR+q] - g->prim[d1*iR+d2*jR+q])*idxRR;
-            gradR[q] = minmod(plm*sL, sC, plm*sR);
+            sL = (g->prim[d1*i +d2*j +q] - g->prim[d1*iL+d2*jL+q])*idxCL;
+            sR = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*i +d2*j +q])*idxRC;
+            sC = (g->prim[d1*iR+d2*jR+q] - g->prim[d1*iL+d2*jL+q])*idxRL;
+            gradraw[q] = sC;
+            gradlim[q] = minmod(plm*sL, sC, plm*sR);
         }
-
-    for(q=0; q<nq; q++)
-    {
-        primL[q] = g->prim[d1*iL+d2*jL+q] + gradL[q]*(xfC[dir]-xL[dir]);
-        primR[q] = g->prim[d1*iR+d2*jR+q] + gradR[q]*(xfC[dir]-xR[dir]);
-    }
 }
 
 void copy_to_rk(struct grid *g)

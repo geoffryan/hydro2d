@@ -82,11 +82,13 @@ void flux_newt2b(double *prim, double *F, double x[2], int dir,
     }
 }
 
-void add_source_newt2b(double *prim, double *cons, double xm[2], double xp[2],
-                        double dt, struct parList *pars)
+void add_source_newt2b(double *prim, double *cons, double *prim_grad, 
+                        double xm[2], double xp[2], double dt, 
+                        struct parList *pars)
 {
-    double x[2];
+    double x[2], dV;
     geom_CM(xm, xp, x);
+    dV = geom_dV(xm, xp);
 
     double igam[3][3];
     double dgam[2][3][3];
@@ -113,8 +115,8 @@ void add_source_newt2b(double *prim, double *cons, double xm[2], double xp[2],
             sx2 += 0.5 * (rho*vx[i]*vx[j] + igam[i][j]*P) * dgam[1][i][j];
         }
 
-    cons[SX1] += sx1 * dVdt;
-    cons[SX2] += sx2 * dVdt;
+    cons[SX1] += sx1 * dV*dt;
+    cons[SX2] += sx2 * dV*dt;
 }
 
 void wave_speeds_newt2b(double *primA, double *primB, double *sL, 

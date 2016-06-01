@@ -18,6 +18,9 @@ void add_sources(struct grid *g, double dt, struct parList *pars);
 void substep(struct grid *g, double rkfac1, double rkfac2, double dt,
                 struct parList *pars)
 {
+    //Calculate gradients of grid quantities
+    calc_grad(g, pars);
+
     //Solve Riemann problems.
     add_fluxes(g, dt, pars);
 
@@ -62,31 +65,31 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
         for(j = ng21; j < nx2-ng22; j++)
         {
             double primL[nq], primR[nq], F[nq];
+            double xLm[2] = {g->x1[i-1], g->x2[j]};
+            double xLp[2] = {g->x1[i], g->x2[j+1]};
+            double xRm[2] = {g->x1[i], g->x2[j]};
+            double xRp[2] = {g->x1[i+1], g->x2[j+1]};
             double xm[2] = {g->x1[i], g->x2[j]};
             double xp[2] = {g->x1[i], g->x2[j+1]};
-            double x[2];
-            geom_CM(xm, xp, x);
+            double x[2], xL[2], xR[2];
+            geom_CM(xLm, xLp, xL);
+            geom_CM(xRm, xRp, xR);
+            geom_CM2(xm, xp, x, 0);
             double dA = geom_dA(xm, xp, 0);
             double hn = geom_J(x) / geom_J2(x,0);
 
             int nL = d1*(i-1)+d2*j;
             int nR = d1*i+d2*j;
 
-            double xL[2] = {g->x1[i-1], g->x2[j]};
-            double xR[2] = {g->x1[i+1], g->x2[j+1]};
-            double xcL[2], xcR[2];
-            geom_CM(xL, xp, xcL);
-            geom_CM(xm, xR, xcR);
-
             for(q=0; q<nq; q++)
             {
                 primL[nq] = g->prim[nL+q]
-                            + (xp[0]-xcL[0]) * g->prim_grad[2*nL+0+q];
+                            + (xL[0]-x[0]) * g->prim_grad[2*nL+0*nq+q]
+                            + (xL[1]-x[1]) * g->prim_grad[2*nL+1*nq+q];
                 primR[nq] = g->prim[nR+q]
-                            + (xp[0]-xcR[0]) * g->prim_grad[2*nL+0+q];
+                            + (xR[0]-x[0]) * g->prim_grad[2*nL+0*nq+q]
+                            + (xR[1]-x[1]) * g->prim_grad[2*nL+1*nq+q];
             }
-
-            reconstruction(g, i, j, 0, primL, primR, pars);
 
             riemann_flux(primL, primR, F, nq, x, 0, pars);
 
@@ -102,15 +105,33 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
         for(j = jmin; j < jmax; j++)
         {
             double primL[nq], primR[nq], F[nq];
+            double xLm[2] = {g->x1[i], g->x2[j-1]};
+            double xLp[2] = {g->x1[i+1], g->x2[j]};
+            double xRm[2] = {g->x1[i], g->x2[j]};
+            double xRp[2] = {g->x1[i+1], g->x2[j+1]};
             double xm[2] = {g->x1[i], g->x2[j]};
             double xp[2] = {g->x1[i+1], g->x2[j]};
-            double x[2];
-            geom_CM(xm, xp, x);
+            double x[2], xL[2], xR[2];
+            geom_CM(xLm, xLp, xL);
+            geom_CM(xRm, xRp, xR);
+            geom_CM2(xm, xp, x, 1);
+            
             double dA = geom_dA(xm, xp, 1);
-
             double hn = geom_J(x) / geom_J2(x,1);
             
-            reconstruction(g, i, j, 1, primL, primR, pars);
+            int nL = d1*(i-1)+d2*j;
+            int nR = d1*i+d2*j;
+
+            for(q=0; q<nq; q++)
+            {
+                primL[nq] = g->prim[nL+q]
+                            + (xL[0]-x[0]) * g->prim_grad[2*nL+0*nq+q]
+                            + (xL[1]-x[1]) * g->prim_grad[2*nL+1*nq+q];
+                primR[nq] = g->prim[nR+q]
+                            + (xR[0]-x[0]) * g->prim_grad[2*nL+0*nq+q]
+                            + (xR[1]-x[1]) * g->prim_grad[2*nL+1*nq+q];
+            }
+
             riemann_flux(primL, primR, F, nq, x, 1, pars);
 
             for(q=0; q<nq; q++)
@@ -140,7 +161,7 @@ void add_sources(struct grid *g, double dt, struct parList *pars)
             double xp[2] = {g->x1[i+1], g->x2[j+1]};
 
             add_source(&(g->prim[d1*i+d2*j]), &(g->cons[d1*i+d2*j]), 
-                        xm, xp, dt, pars);
+                        &(g->prim_grad[2*(d1*i+d2*j)]), xm, xp, dt, pars);
         }
 }
 

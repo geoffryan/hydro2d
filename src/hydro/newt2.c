@@ -84,12 +84,14 @@ void flux_newt2(double *prim, double *F, double x[2], int dir,
     }
 }
 
-void add_source_newt2(double *prim, double *cons, double xm[2], double xp[2],
-                        double dt, struct parList *pars)
+void add_source_newt2(double *prim, double *cons, double *prim_grad, 
+                        double xm[2], double xp[2], double dt, 
+                        struct parList *pars)
 {
 
-    double x[2];
-    geom_CM(xm, xp, x)
+    double x[2], dV;
+    geom_CM(xm, xp, x);
+    dV = geom_dV(xm, xp);
 
     double igam[3][3];
     double dgam[2][3][3];
@@ -101,18 +103,19 @@ void add_source_newt2(double *prim, double *cons, double xm[2], double xp[2],
     double P = prim[PPP];
 
     int i, j;
-    double sx1 = 0;
-    double sx2 = 0;
+    double sV1 = 0;
+    double sV2 = 0;
 
     for(i=0; i<2; i++)
         for(j=0; j<2; j++)
         {
-            sx1 += 0.5 * (rho*vx[i]*vx[j] + igam[i][j]*P) * dgam[0][i][j];
-            sx2 += 0.5 * (rho*vx[i]*vx[j] + igam[i][j]*P) * dgam[1][i][j];
+            sV1 += 0.5 * (rho*vx[i]*vx[j] + igam[i][j]*P) * dgam[0][i][j];
+            sV2 += 0.5 * (rho*vx[i]*vx[j] + igam[i][j]*P) * dgam[1][i][j];
         }
 
-    cons[SX1] += sx1 * dVdt;
-    cons[SX2] += sx2 * dVdt;
+
+    cons[SX1] += sV1 * dV*dt;
+    cons[SX2] += sV2 * dV*dt;
 }
 
 void wave_speeds_newt2(double *prim1, double *prim2, double *sL, 

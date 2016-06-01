@@ -10,6 +10,7 @@ int set_geometry(struct parList *par)
     if(choice == 0)
     {
         geom_CM = &geom_CM_cart_xyz;
+        geom_CM2 = &geom_CM2_cart_xyz;
         geom_dA = &geom_dA_cart_xyz;
         geom_dV = &geom_dV_cart_xyz;
         geom_J = &geom_J_cart_xyz;
@@ -21,6 +22,7 @@ int set_geometry(struct parList *par)
     else if(choice == 1)
     {
         geom_CM = &geom_CM_cyl_rpz;
+        geom_CM2 = &geom_CM2_cyl_rpz;
         geom_dA = &geom_dA_cyl_rpz;
         geom_dV = &geom_dV_cyl_rpz;
         geom_J = &geom_J_cyl_rpz;
@@ -32,6 +34,7 @@ int set_geometry(struct parList *par)
     else if(choice == 2)
     {
         geom_CM = &geom_CM_sph_tpr;
+        geom_CM2 = &geom_CM2_sph_tpr;
         geom_dA = &geom_dA_sph_tpr;
         geom_dV = &geom_dV_sph_tpr;
         geom_J = &geom_J_sph_tpr;

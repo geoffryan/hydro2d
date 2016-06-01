@@ -1,6 +1,6 @@
 #Parameter File for HYDRO2D
 
-Hydro       1    // 0 Newtonian, 1 NewtonianB
+Hydro       0    // 0 Newtonian, 1 NewtonianB
 Geometry    1    // 0 CartXYZ, 1 CylRPZ, 2 SphTPR
 EOS         0    // 0 Ideal Gamma-law gas.
 Cool        0    // 0 No Cooling
@@ -9,13 +9,13 @@ Riemann     0    // 0 Lax-Friedrichs, 1 HLL
 Timestep    0    // 0 Forward-Euler, 1 RK2-MP, 2 RK2-TVD, 3 RK3-TVD
 
 Nx1         32   // Number of zones
-Nx2         64   // Number of zones
+Nx2         32   // Number of zones
 Nghost      2    // Number of ghost zones
 Ncons       4    // Number of conserved quantities
 Npass       0    // Number of passive quantities
 
 Tmin        0.0
-Tmax        1.0
+Tmax        1.0e-1
 X1min       0.0
 X1max       1.0 //3.1415926535897932385
 X2min       0.0
@@ -36,8 +36,8 @@ GammaLaw    1.666666666
 Init        0     // 0 Uniform, 1 Isentrope, 2 Shocktube
 InitPar1    1.0   // Rho
 InitPar2    1.0   // P 
-InitPar3    0.0   // vx1
-InitPar4    0.5   // vx2
+InitPar3    0.0   // vx
+InitPar4    0.0   // vy
 InitPar5    0.0   // 
 InitPar6    0.0   // 
 InitPar7    0.0   // 
