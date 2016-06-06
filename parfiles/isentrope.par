@@ -5,8 +5,8 @@ Geometry    0    // 0 CartXYZ, 1 CylRPZ, 2 SphTPR, 3 CylRPZ-B
 EOS         0    // 0 Ideal Gamma-law gas.
 Cool        0    // 0 No Cooling
 Recon       1    // 0 PCM, 1 PLM
-Riemann     0    // 0 Lax-Friedrichs, 1 HLL
-Timestep    2    // 0 Forward-Euler, 1 RK2-MP, 2 RK2-TVD, 3 RK3-TVD
+Riemann     1    // 0 Lax-Friedrichs, 1 HLL
+Timestep    3    // 0 Forward-Euler, 1 RK2-MP, 2 RK2-TVD, 3 RK3-TVD
 
 Nx1         2048   // Number of zones
 Nx2         1   // Number of zones
@@ -24,22 +24,22 @@ X2max       1.0 //6.2831853071795864769
 IO             1    //0 ASCII, 1 HDF5
 NumCheckpoints 2
 
-BCX1Inner   3    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
-BCX1Outer   3    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
-BCX2Inner   0    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
-BCX2Outer   0    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
+BCX1Inner   2    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
+BCX1Outer   2    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
+BCX2Inner   2    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
+BCX2Outer   2    // 0 None, 1 Fixed, 2 Outflow, 3 Periodic
 
-PLM         1.5
+PLM         2.0
 CFL         0.5
 GammaLaw    1.666666666
 
 Init        1     // 0 Uniform, 1 Isentrope, 2 Shocktube
 InitPar1    1.0   // Rho0
 InitPar2    1.0   // P0 
-InitPar3    0.2   // x0 Pulse Location
+InitPar3    0.3   // x0 Pulse Location
 InitPar4    0.1   // L Pulse width
 InitPar5    0.12   // a Pulse strength
-InitPar6    0.0   // phi Pulse direction
+InitPar6    1.0   // phi Pulse direction
 InitPar7    0.0   // 
 InitPar8    0.0   //
 

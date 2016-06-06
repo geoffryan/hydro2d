@@ -169,7 +169,6 @@ void interpolate_plm(struct grid *g, int i, int j, int dir,
     geom_CM(xCm, xCp, xC);
     geom_CM(xRm, xRp, xR);
 
-
     //If at a domain edge, fix outer x[] to exactly mirror edge zone.
     if(dir==0 && iL==i)
         xL[dir] = 2*g->x1[0] - xC[dir];

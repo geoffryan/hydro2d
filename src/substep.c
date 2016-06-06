@@ -84,11 +84,11 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
             for(q=0; q<nq; q++)
             {
                 primL[q] = g->prim[nL+q]
-                            + (xL[0]-x[0]) * g->prim_grad[2*nL+0*nq+q]
-                            + (xL[1]-x[1]) * g->prim_grad[2*nL+1*nq+q];
+                            + (x[0]-xL[0]) * g->prim_grad[2*nL+0*nq+q]
+                            + (x[1]-xL[1]) * g->prim_grad[2*nL+1*nq+q];
                 primR[q] = g->prim[nR+q]
-                            + (xR[0]-x[0]) * g->prim_grad[2*nR+0*nq+q]
-                            + (xR[1]-x[1]) * g->prim_grad[2*nR+1*nq+q];
+                            + (x[0]-xR[0]) * g->prim_grad[2*nR+0*nq+q]
+                            + (x[1]-xR[1]) * g->prim_grad[2*nR+1*nq+q];
             }
 
             riemann_flux(primL, primR, F, nq, x, 0, pars);
@@ -125,11 +125,11 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
             for(q=0; q<nq; q++)
             {
                 primL[q] = g->prim[nL+q]
-                            + (xL[0]-x[0]) * g->prim_grad[2*nL+0*nq+q]
-                            + (xL[1]-x[1]) * g->prim_grad[2*nL+1*nq+q];
+                            + (x[0]-xL[0]) * g->prim_grad[2*nL+0*nq+q]
+                            + (x[1]-xL[1]) * g->prim_grad[2*nL+1*nq+q];
                 primR[q] = g->prim[nR+q]
-                            + (xR[0]-x[0]) * g->prim_grad[2*nR+0*nq+q]
-                            + (xR[1]-x[1]) * g->prim_grad[2*nR+1*nq+q];
+                            + (x[0]-xR[0]) * g->prim_grad[2*nR+0*nq+q]
+                            + (x[1]-xR[1]) * g->prim_grad[2*nR+1*nq+q];
             }
 
             riemann_flux(primL, primR, F, nq, x, 1, pars);

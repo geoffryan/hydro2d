@@ -43,6 +43,34 @@ def DV(x1f, x2f, pars):
 
     return dV
 
+def clipInd(x1, x2, dx, pars):
+
+    geom = pars['Geometry']
+
+    if geom == 1:
+        x1p = pars['X1max'] - dx
+        ind1 = x1 < x1p
+        ind2 = x2 > -np.inf
+    elif geom == 2:
+        ind1 = x1 > -np.inf
+        ind2 = x2 > -np.inf
+    elif geom == 3:
+        x1p = pars['X1max'] - dx
+        ind1 = x1 < x1p
+        ind2 = x2 > -np.inf
+    else:
+        x1m = pars['X1min'] + dx
+        x1p = pars['X1max'] - dx
+        ind1 = (x1 > x1m) * (x1 < x1p)
+        x2m = pars['X2min'] + dx
+        x2p = pars['X2max'] - dx
+        ind2 = (x2 > x2m) * (x2 < x2p)
+    
+    ind1c = (ind1[:-1]*ind1[1:])
+    ind2c = (ind2[:-1]*ind2[1:])
+
+    return ind1, ind2, ind1c, ind2c
+
 def genGrid(x1, x2, pars):
     X1, X2 = np.meshgrid(x1, x2, indexing='ij')
     return X1, X2
@@ -159,8 +187,8 @@ def isentrope1D_evolve(X0, t, pars):
     a = pars['InitPar5']
 
     K = P0 / math.pow(rho0, gam)
-    cs = math.sqrt(gam*P0/rho0)
-    J = -2*cs / (gam-1.0)
+    cs0 = math.sqrt(gam*P0/rho0)
+    J = -2*cs0 / (gam-1.0)
 
     dx = (X0-x0)/L
     inInd = np.fabs(dx) < 1.0
@@ -237,7 +265,7 @@ def test():
 
     plt.show()
 
-def analyze(fname, p=1, plot=True):
+def analyze(fname, p=1, plot=True, clip=True):
 
     t, x1, x2, prim, cons, pars = rc.readCheckpoint(fname)
 
@@ -245,13 +273,28 @@ def analyze(fname, p=1, plot=True):
     n2 = pars['Nx2']
     l1 = pars['X1max'] - pars['X1min']
     l2 = pars['X2max'] - pars['X2min']
-
-    rho_e, P_e, v1_e, v2_e, XX = isentrope(x1, x2, t, pars)
+    gam = pars['GammaLaw']
+    rho0 = pars['InitPar1']
+    P0 = pars['InitPar2']
+    a = pars['InitPar5']
 
     rho = prim[:,:,0]
     P = prim[:,:,1]
     v1 = prim[:,:,2]
     v2 = prim[:,:,3]
+
+    if clip:
+        maxV = ((1.0+gam)*math.pow(1.0+a,0.5*(gam-1)) - 2) / (gam-1.0) \
+                 * math.sqrt(gam*P0/rho0)
+        ind1, ind2, ind1c, ind2c = clipInd(x1, x2, maxV*t, pars)
+        rho = rho[ind1c][:,ind2c]
+        P = P[ind1c][:,ind2c]
+        v1 = v1[ind1c][:,ind2c]
+        v2 = v2[ind1c][:,ind2c]
+        x1 = x1[ind1]
+        x2 = x2[ind2]
+
+    rho_e, P_e, v1_e, v2_e, XX = isentrope(x1, x2, t, pars)
 
     if plot:
         fig, ax = plt.subplots(2,2)
@@ -261,7 +304,7 @@ def analyze(fname, p=1, plot=True):
         ax[0,1].plot(XX, P, 'b+')
         ax[1,0].plot(XX, v1_e, 'k+')
         ax[1,0].plot(XX, v1, 'b+')
-        ax[1,1].plot(XX, v1_e, 'k+')
+        ax[1,1].plot(XX, v2_e, 'k+')
         ax[1,1].plot(XX, v2, 'b+')
     else:
         fig = None
