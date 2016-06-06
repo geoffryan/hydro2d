@@ -3,8 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import readCheckpoint as rc
 
-
-
 def plot2DSingle(fig, ax, X1, X2, dat, title=None):
     try:
         im = ax.pcolormesh(X1, X2, dat, cmap=plt.cm.viridis)

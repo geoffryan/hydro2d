@@ -9,3 +9,4 @@ bin/hydro2d
 bin/
 Makefile.in
 data/
+temp/
