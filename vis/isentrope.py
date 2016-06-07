@@ -19,6 +19,12 @@ def CM(x1f, x2f, pars):
         x1m = x1f[:-1]
         x1 = 2.0*(x1m*x1m+x1m*x1p+x1p*x1p) / (3.0*(x1m+x1p))
         x2 = 0.5*(x2f[1:]+x2f[:-1])
+    elif geom == 4:
+        x1 = 0.5*(x1f[1:]+x1f[:-1])
+        x2 = 0.5*(x2f[1:]+x2f[:-1])
+    elif geom == 5:
+        x1 = 0.5*(x1f[1:]+x1f[:-1])
+        x2 = 0.5*(x2f[1:]+x2f[:-1])
     else:
         x1 = 0.5*(x1f[1:]+x1f[:-1])
         x2 = 0.5*(x2f[1:]+x2f[:-1])
@@ -30,14 +36,24 @@ def DV(x1f, x2f, pars):
     geom = pars['Geometry']
 
     if geom == 1:
-        dV = 0.5*(x1f[1:]+x1f[:-1])*(x1f[1:]-x1f[:-1])[:,None] \
-                * (x2f[1:]-x2f[:-1])[:,None]
+        dV = 0.5*((x1f[1:]+x1f[:-1])*(x1f[1:]-x1f[:-1]))[:,None] \
+                * (x2f[1:]-x2f[:-1])[None,:]
     elif geom == 2:
         dV = (np.cos(x1f[:-1])-np.cos(x1f[1:]))[:,None] \
                 * (x2f[1:]-x2f[:-1])[None,:]
     elif geom == 3:
         dV = 0.5*(x1f[1:]+x1f[:-1])*(x1f[1:]-x1f[:-1])[:,None] \
                 * (x2f[1:]-x2f[:-1])[None,:]
+    elif geom == 4:
+        xp = x1f[1:]
+        xm = x1f[:-1]
+        dV = (((xm*xm+xm*xp+xp*xp)*(xp-xm))[:,None]
+                * (np.cos(x2f[:-1])-np.cos(x2f[1:]))[None,:]) / 3.0
+    elif geom == 5:
+        xp = x1f[1:]
+        xm = x1f[:-1]
+        dV = (((xm*xm+xm*xp+xp*xp)*(xp-xm))[:,None]
+                * (np.cos(x2f[:-1])-np.cos(x2f[1:]))[None,:]) / 3.0
     else:
         dV = (x1f[1:]-x1f[:-1])[:,None] * (x2f[1:]-x2f[:-1])[None,:]
 
@@ -55,6 +71,14 @@ def clipInd(x1, x2, dx, pars):
         ind1 = x1 > -np.inf
         ind2 = x2 > -np.inf
     elif geom == 3:
+        x1p = pars['X1max'] - dx
+        ind1 = x1 < x1p
+        ind2 = x2 > -np.inf
+    elif geom == 4:
+        x1p = pars['X1max'] - dx
+        ind1 = x1 < x1p
+        ind2 = x2 > -np.inf
+    elif geom == 5:
         x1p = pars['X1max'] - dx
         ind1 = x1 < x1p
         ind2 = x2 > -np.inf
@@ -84,6 +108,9 @@ def coord2Cart(x1, x2, pars):
     elif geom == 2:
         x = x1 * np.cos(x2)
         y = x1 * np.sin(x2)
+    elif geom == 4 or geom == 5:
+        x = x1 * np.cos(x2)
+        y = x1 * np.sin(x2)
     else:
         x = x1.copy()
         y = x2.copy()
@@ -103,6 +130,11 @@ def velCart2Coord(x1, x2, vx, vy, pars):
         sinp = np.sin(x2)
         vx1 = cosp*vx + sinp*vy
         vx2 = (-sinp*vx + cosp*vy) / x1
+    if geom == 4 or geom == 5:
+        cost = np.cos(x2)
+        sint = np.sin(x2)
+        vx1 = cost*vx + sint*vy
+        vx2 = (-sint*vx + cost*vy) / x1
     else:
         vx1 = vx.copy()
         vx2 = vy.copy()

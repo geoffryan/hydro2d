@@ -56,8 +56,15 @@ void make_grid(struct grid *g, struct parList *pars)
     g->prim = (double *) malloc(g->nx1 * g->nx2 * g->nq * sizeof(double));
     g->cons = (double *) malloc(g->nx1 * g->nx2 * g->nq * sizeof(double));
     g->cons_rk = (double *) malloc(g->nx1 * g->nx2 * g->nq * sizeof(double));
-    g->prim_grad =  (double *) malloc(g->nx1 * g->nx2 * g->nq * 2 * sizeof(double));
-    g->prim_grad2 = (double *) malloc(g->nx1 * g->nx2 * g->nq * 2 * sizeof(double));
+    g->prim_grad =  (double *) malloc(g->nx1 * g->nx2 * g->nq * 2
+                                        * sizeof(double));
+    g->prim_grad2 = (double *) malloc(g->nx1 * g->nx2 * g->nq * 2
+                                        * sizeof(double));
+
+    if(pars->x1pifac > 0)
+        g->x1max *= (pars->x1pifac) * M_PI;
+    if(pars->x2pifac > 0)
+        g->x2max *= (pars->x2pifac) * M_PI;
 
     int i;
     double dx1 = (g->x1max - g->x1min) / g->nx1_int;
@@ -66,6 +73,8 @@ void make_grid(struct grid *g, struct parList *pars)
         g->x1[i] = g->x1min + (i - g->ng11) * dx1;
     for(i=0; i<g->nx2+1; i++)
         g->x2[i] = g->x2min + (i - g->ng21) * dx2;
+    g->x1[g->ng11+g->nx1_int] = g->x1max;
+    g->x2[g->ng21+g->nx2_int] = g->x2max;
 }
 
 void free_grid(struct grid *g)

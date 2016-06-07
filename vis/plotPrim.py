@@ -26,14 +26,16 @@ def plotAll2D(filename):
     prim = dat[3]
     pars = dat[5]
 
-    if pars['Geometry'] == 1:
+    geom = pars['Geometry']
+
+    if geom == 1 or geom == 3 or geom == 4 or geom == 5:
         X2, X1 = np.meshgrid(x1, x2, indexing='ij')
         sub_kw=dict(projection='polar')
     else:
         X1, X2 = np.meshgrid(x1, x2, indexing='ij')
         sub_kw=dict(projection='rectilinear')
 
-    fig, ax = plt.subplots(2,2,figsize=(12,9), subplot_kw=sub_kw)
+    fig, ax = plt.subplots(2,2,figsize=(20,16), subplot_kw=sub_kw)
 
     plot2DSingle(fig, ax[0,0], X1, X2, prim[:,:,0])
     plot2DSingle(fig, ax[0,1], X1, X2, prim[:,:,1])

@@ -1,7 +1,7 @@
-N="0008 0016 0032 0064 0128 0256 0512"
+N="0008 0016 0032 0064 0128 0256"
 #N="0008 0016 0032 0064 0128 0256 0512 1024 2048 4096"
-fac=3
-parfile="parfiles/isentrope.par"
+fac=1
+parfile="parfiles/isentropePolar.par"
 name=${parfile##*/}
 mkdir -p temp
 

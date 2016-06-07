@@ -76,8 +76,10 @@ void read_pars(struct parList *theParList, char filename[])
     readvar(filename, "Tmax",           VAR_DBL, &(theParList->tmax));
     readvar(filename, "X1min",          VAR_DBL, &(theParList->x1min));
     readvar(filename, "X1max",          VAR_DBL, &(theParList->x1max));
+    readvar(filename, "X1PiFac",        VAR_INT, &(theParList->x1pifac));
     readvar(filename, "X2min",          VAR_DBL, &(theParList->x2min));
     readvar(filename, "X2max",          VAR_DBL, &(theParList->x2max));
+    readvar(filename, "X2PiFac",        VAR_INT, &(theParList->x2pifac));
     readvar(filename, "PLM",            VAR_DBL, &(theParList->plm));
     readvar(filename, "CFL",            VAR_DBL, &(theParList->cfl));
     readvar(filename, "GammaLaw",       VAR_DBL, &(theParList->gammalaw));
@@ -123,8 +125,10 @@ void print_pars(struct parList *theParList, char filename[])
     fprintf(f, "Tmax: %g\n", theParList->tmax);
     fprintf(f, "X1min: %g\n", theParList->x1min);
     fprintf(f, "X1max: %g\n", theParList->x1max);
+    fprintf(f, "X1PiFac: %d\n", theParList->x1pifac);
     fprintf(f, "X2min: %g\n", theParList->x2min);
     fprintf(f, "X2max: %g\n", theParList->x2max);
+    fprintf(f, "X2PiFac: %d\n", theParList->x2pifac);
     fprintf(f, "PLM: %g\n", theParList->plm);
     fprintf(f, "CFL: %g\n", theParList->cfl);
     fprintf(f, "GammaLaw: %g\n", theParList->gammalaw);

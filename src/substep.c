@@ -95,9 +95,16 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
 
             for(q=0; q<nq; q++)
             {
-                g->cons[d1*(i-1)+d2*j+q] -= F[q] * hn * dA * dt;
-                g->cons[d1*  i  +d2*j+q] += F[q] * hn * dA * dt;
+                g->cons[nL+q] -= F[q] * hn * dA * dt;
+                g->cons[nR+q] += F[q] * hn * dA * dt;
             }
+
+            /*
+            printf("face %d: %.12lg %.12lg %.12lg %.12lg\n", i, g->prim[nL+1],
+                        primL[1], primR[1], g->prim[nR+1]);
+            printf("%d: -%.12lg (%.12lg)\n", i-1, F[2]*hn*dA, F[2]);
+            printf("%d: +%.12lg (%.12lg)\n", i, F[2]*hn*dA, F[2]);
+            */
         }
     
     //X2 Faces.
@@ -136,8 +143,8 @@ void add_fluxes(struct grid *g, double dt, struct parList *pars)
 
             for(q=0; q<nq; q++)
             {
-                g->cons[d1*i+d2*(j-1)+q] -= F[q] * hn * dA * dt;
-                g->cons[d1*i+d2*  j  +q] += F[q] * hn * dA * dt;
+                g->cons[nL+q] -= F[q] * hn * dA * dt;
+                g->cons[nR+q] += F[q] * hn * dA * dt;
             }
         }
 }
@@ -160,6 +167,8 @@ void add_sources(struct grid *g, double dt, struct parList *pars)
         {
             double xm[2] = {g->x1[i], g->x2[j]};
             double xp[2] = {g->x1[i+1], g->x2[j+1]};
+
+            //printf("%d:", i);
 
             add_source(&(g->prim[d1*i+d2*j]), &(g->cons[d1*i+d2*j]), 
                         &(g->prim_grad[2*(d1*i+d2*j)   ]), 

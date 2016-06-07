@@ -13,7 +13,7 @@ void initial_uniform(double *prim, double x[2], int nq, struct parList *par)
     double vy = par->initPar4;
     double vx1, vx2;
 
-    if(par->geom == 1 || par->geom == 3)
+    if(par->geom == 1 || par->geom == 3 || par->geom == 4 || par->geom == 5)
     {
         double r = x[0];
         double phi = x[1];

@@ -108,9 +108,17 @@ void add_source_newt2(double *prim, double *cons, double *prim_grad1,
     for(i=0; i<2; i++)
         for(j=0; j<2; j++)
         {
-            sx1 += 0.5 * (rho*vx[i]*vx[j] + igam[i][j]*P) * dgam[0][i][j];
-            sx2 += 0.5 * (rho*vx[i]*vx[j] + igam[i][j]*P) * dgam[1][i][j];
+            sx1 += 0.5 * rho*vx[i]*vx[j] * dgam[0][i][j];
+            sx2 += 0.5 * rho*vx[i]*vx[j] * dgam[1][i][j];
         }
+    for(i=0; i<3; i++)
+        for(j=0; j<3; j++)
+        {
+            sx1 += 0.5 * igam[i][j]*P * dgam[0][i][j];
+            sx2 += 0.5 * igam[i][j]*P * dgam[1][i][j];
+        }
+
+    //printf(" %.12lg (%.12lg)\n", sx1*dV, sx1);
 
     cons[SX1] += sx1 * dV*dt;
     cons[SX2] += sx2 * dV*dt;

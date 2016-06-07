@@ -27,6 +27,8 @@ void initial_isentrope(double *prim, double x[2], int nq, struct parList *pars)
 
     if(pars->geom == 1 || pars->geom == 3)
         dx = (x[0]*cos(x[1])*cos(phi)+x[0]*sin(x[1])*sin(phi)-x0)/L;
+    else if(pars->geom == 4 || pars->geom == 5)
+        dx = (x[0]*cos(x[1])*cos(phi)+x[0]*sin(x[1])*sin(phi)-x0)/L;
     else
         dx = (x[0]*cos(phi)+x[1]*sin(phi)-x0)/L;
     rho = rho0;
@@ -47,6 +49,11 @@ void initial_isentrope(double *prim, double x[2], int nq, struct parList *pars)
     vy = v*sin(phi);
 
     if(pars->geom == 1 || pars->geom == 3)
+    {
+        vx1 = cos(x[1])*vx + sin(x[1])*vy;
+        vx2 = (-sin(x[1])*vx + cos(x[1])*vy) / x[0];
+    }
+    else if(pars->geom == 4 || pars->geom == 5)
     {
         vx1 = cos(x[1])*vx + sin(x[1])*vy;
         vx2 = (-sin(x[1])*vx + cos(x[1])*vy) / x[0];

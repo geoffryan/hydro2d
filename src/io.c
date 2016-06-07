@@ -180,8 +180,10 @@ void io_print_pars_hdf5(struct parList *par, hid_t id)
     io_write_attr_hdf5(id, "Tmax",     VAR_DBL, &(par->tmax), 0);
     io_write_attr_hdf5(id, "X1min",     VAR_DBL, &(par->x1min), 0);
     io_write_attr_hdf5(id, "X1max",     VAR_DBL, &(par->x1max), 0);
+    io_write_attr_hdf5(id, "X1PiFac",     VAR_INT, &(par->x1pifac), 0);
     io_write_attr_hdf5(id, "X2min",     VAR_DBL, &(par->x2min), 0);
     io_write_attr_hdf5(id, "X2max",     VAR_DBL, &(par->x2max), 0);
+    io_write_attr_hdf5(id, "X2PiFac",     VAR_INT, &(par->x2pifac), 0);
     io_write_attr_hdf5(id, "PLM",     VAR_DBL, &(par->plm), 0);
     io_write_attr_hdf5(id, "CFL",     VAR_DBL, &(par->cfl), 0);
     io_write_attr_hdf5(id, "GammaLaw",     VAR_DBL, &(par->gammalaw), 0);

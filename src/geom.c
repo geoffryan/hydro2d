@@ -67,6 +67,18 @@ int set_geometry(struct parList *par)
         geom_igam = &geom_igam_sph_rtp;
         geom_dgam = &geom_dgam_sph_rtp;
     }
+    else if(choice == 5)
+    {
+        geom_CM = &geom_CM_sph_rtp_B;
+        geom_CM2 = &geom_CM2_sph_rtp_B;
+        geom_dA = &geom_dA_sph_rtp_B;
+        geom_dV = &geom_dV_sph_rtp_B;
+        geom_J = &geom_J_sph_rtp_B;
+        geom_J2 = &geom_J2_sph_rtp_B;
+        geom_gam = &geom_gam_sph_rtp_B;
+        geom_igam = &geom_igam_sph_rtp_B;
+        geom_dgam = &geom_dgam_sph_rtp_B;
+    }
     else
     {
         err = 1;
