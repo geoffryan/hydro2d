@@ -25,9 +25,11 @@ struct parList
     double tmax;
     double x1min;
     double x1max;
+    int x1type;
     int x1pifac;
     double x2min;
     double x2max;
+    int x2type;
     int x2pifac;
     double plm;
     double cfl;
@@ -68,9 +70,11 @@ const static struct parList PAR_DEFAULT = {
     .tmax = 1.0,
     .x1min = 0.0,
     .x1max = 1.0,
+    .x1type = 0,
     .x1pifac = 0,
     .x2min = 0.0,
     .x2max = 1.0,
+    .x2type = 0,
     .x2pifac = 0,
     .plm = 1.5,
     .cfl = 0.5,

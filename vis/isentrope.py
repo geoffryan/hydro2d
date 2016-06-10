@@ -369,7 +369,8 @@ if __name__ == "__main__":
 
     for fname in sys.argv[1:]:
         print("Processing {0:s}...".format(fname))
-        n1, n2, l1, l2, rho_e, P_e, v1_e, v2_e, fig = analyze(fname)
+        n1, n2, l1, l2, rho_e, P_e, v1_e, v2_e, fig = analyze(fname, 
+                                                                clip=False)
         N1.append(n1)
         N2.append(n2)
         L1.append(l1)

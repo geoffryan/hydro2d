@@ -65,13 +65,20 @@ void (*reconstruction)(struct grid *, int i, int j, int dir,
 
 int set_reconstruction(struct parList *pars);
 void make_grid(struct grid *g, struct parList *pars);
+void grid_linear(double x[], double xa, double xb, int ia, int ib, int n);
+void grid_log(double x[], double xa, double xb, int ia, int ib, int n);
 void free_grid(struct grid *g);
 
 void calc_grad(struct grid *g, struct parList *par);
 void interpolate_constant(struct grid *g, int i, int j, int dir,
-                        double gradlim[], double gradraw[], struct parList *par);
+                            double gradlim[], double gradraw[], 
+                            struct parList *par);
 void interpolate_plm(struct grid *g, int i, int j, int dir,
-                        double gradlim[], double gradraw[], struct parList *par);
+                        double gradlim[], double gradraw[], 
+                        struct parList *par);
+void interpolate_plm_tvd(struct grid *g, int i, int j, int dir,
+                            double gradlim[], double gradraw[], 
+                            struct parList *par);
 
 void copy_to_rk(struct grid *g);
 void update_cons(struct grid *g, double fac1, double fac2);

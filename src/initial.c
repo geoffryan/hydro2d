@@ -18,6 +18,8 @@ int set_initial(struct parList *par)
         initial_value = &initial_isentrope;
     else if(choice == 2)
         initial_value = &initial_shocktube;
+    else if(choice == 3)
+        initial_value = &initial_bomb;
     else
     {
         err++;
