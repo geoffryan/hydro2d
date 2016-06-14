@@ -6,7 +6,7 @@
 #include "../hydro.h"
 #include "newt2.h"
 
-void prim2cons_newt2(double *prim, double *cons, double x[2], double dV,
+void prim2cons_newt2c(double *prim, double *cons, double x[2], double dV,
                             struct parList *pars)
 {
     double rho = prim[RHO];
@@ -28,7 +28,7 @@ void prim2cons_newt2(double *prim, double *cons, double x[2], double dV,
     cons[SX2] = rho * l2 * dV;
 }
 
-void cons2prim_newt2(double *cons, double *prim, double x[2], double dV,
+void cons2prim_newt2c(double *cons, double *prim, double x[2], double dV,
                             struct parList *pars)
 {
     double rho = cons[DDD] / dV;
@@ -48,7 +48,7 @@ void cons2prim_newt2(double *cons, double *prim, double x[2], double dV,
     prim[VX2] = (igam[1][0]*mx1 + igam[1][1]*mx2) / rho;
 }
 
-void flux_newt2(double *prim, double *F, double x[2], int dir,
+void flux_newt2c(double *prim, double *F, double x[2], int dir,
                 struct parList *pars)
 {
     double rho = prim[RHO];
@@ -84,10 +84,11 @@ void flux_newt2(double *prim, double *F, double x[2], int dir,
     }
 }
 
-void add_source_newt2(double *prim, double *cons, double *prim_grad1,
+void add_source_newt2c(double *prim, double *cons, double *prim_grad1,
                         double *prim_grad2, double xm[2], double xp[2], 
                         double dt, struct parList *pars)
 {
+
     double x[2], dV;
     geom_CM(xm, xp, x);
     dV = geom_dV(xm, xp);
@@ -102,29 +103,44 @@ void add_source_newt2(double *prim, double *cons, double *prim_grad1,
     double P = prim[PPP];
 
     int i, j;
-    double sx1 = 0;
-    double sx2 = 0;
+    double sV1 = 0;
+    double sV2 = 0;
 
     for(i=0; i<2; i++)
         for(j=0; j<2; j++)
         {
-            sx1 += 0.5 * rho*vx[i]*vx[j] * dgam[0][i][j];
-            sx2 += 0.5 * rho*vx[i]*vx[j] * dgam[1][i][j];
+            //sV1 += 0.5 * (rho*vx[i]*vx[j] + igam[i][j]*P) * dgam[0][i][j];
+            //sV2 += 0.5 * (rho*vx[i]*vx[j] + igam[i][j]*P) * dgam[1][i][j];
+            sV1 += 0.5 * rho*vx[i]*vx[j] * dgam[0][i][j];
+            sV2 += 0.5 * rho*vx[i]*vx[j] * dgam[1][i][j];
         }
-    for(i=0; i<3; i++)
-        for(j=0; j<3; j++)
-        {
-            sx1 += 0.5 * igam[i][j]*P * dgam[0][i][j];
-            sx2 += 0.5 * igam[i][j]*P * dgam[1][i][j];
-        }
+    sV1 *= dV;
+    sV2 *= dV;
 
-    //printf(" %.12lg (%.12lg)\n", sx1*dV, sx1);
+    double sS1 = 0.0;
+    double sS2 = 0.0;
 
-    cons[SX1] += sx1 * dV*dt;
-    cons[SX2] += sx2 * dV*dt;
+    double xmm[2] = {xm[0], xm[1]};
+    double xmp[2] = {xm[0], xp[1]};
+    double xpm[2] = {xp[0], xm[1]};
+    double xpp[2] = {xp[0], xp[1]};
+
+    double dA1m = geom_dA(xmm, xmp, 0);
+    double dA1p = geom_dA(xpm, xpp, 0);
+    double dA2m = geom_dA(xmm, xpm, 1);
+    double dA2p = geom_dA(xmp, xpp, 1);
+
+    double dP1 = prim_grad1[PPP];
+    double dP2 = prim_grad2[PPP];
+
+    sS1 = P*(dA1p-dA1m) + dP1*(xp[0]*dA1p-xm[0]*dA1m-x[0]*(dA1p-dA1m)-dV);
+    sS2 = P*(dA2p-dA2m) + dP2*(xp[1]*dA2p-xm[1]*dA2m-x[1]*(dA2p-dA2m)-dV);
+
+    cons[SX1] += (sV1 + sS1) * dt;
+    cons[SX2] += (sV2 + sS2) * dt;
 }
 
-void wave_speeds_newt2(double *prim1, double *prim2, double *sL, 
+void wave_speeds_newt2c(double *prim1, double *prim2, double *sL, 
                         double *sR, double *sC, double x[2], int dir,
                         struct parList *pars)
 {
@@ -175,7 +191,7 @@ void wave_speeds_newt2(double *prim1, double *prim2, double *sL,
     }
 }
 
-double mindt_newt2(double *prim, double x[2], double dx[2], 
+double mindt_newt2c(double *prim, double x[2], double dx[2], 
                     struct parList *pars)
 {
     double hh1, hh2, igam[3][3];
@@ -207,7 +223,7 @@ double mindt_newt2(double *prim, double x[2], double dx[2],
     return dt;
 }
 
-void reflectInds_newt2(int dir, int *inds, int nq)
+void reflectInds_newt2c(int dir, int *inds, int nq)
 {
     int i;
     for(i=0; i<nq; i++)
@@ -219,7 +235,7 @@ void reflectInds_newt2(int dir, int *inds, int nq)
         inds[VX2] = 1;
 }
 
-void Ustar_newt2(double *prim, double *Us, double sK, double sC, double x[2],
+void Ustar_newt2c(double *prim, double *Us, double sK, double sC, double x[2],
                         struct parList *pars)
 {
     /*

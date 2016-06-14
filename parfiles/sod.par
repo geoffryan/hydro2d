@@ -1,7 +1,7 @@
 #Parameter File for HYDRO2D
 
 Hydro       0    // 0 Newtonian
-Geometry    0    // 0 CartXYZ, 1 CylRPZ
+Geometry    0    // 0 CartXYZ, 1 CylRPZ, 2 SphTPR, 3 CylRPZ-B, 4 SphRTP
 EOS         0    // 0 Ideal Gamma-law gas.
 Cool        0    // 0 No Cooling
 Recon       0    // 0 PCM, 1 PLM
